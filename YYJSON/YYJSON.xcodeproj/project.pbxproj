@@ -26,6 +26,8 @@
 		3182155BC1A97F149BE8F01A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31821DAB7590A6B5C5904010 /* UIKit.framework */; };
 		3182158A46D61EC837787D22 /* JsonLiteParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 31821D6F1E501495F1CD914B /* JsonLiteParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		318215B5D7CEE80A61E42527 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31821EBA6B6511BDA97AA671 /* CoreGraphics.framework */; };
+		31821702319806134EDE3CC2 /* YYUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3182173BA1185D19DAAE086F /* YYUtils.m */; };
+		318217ABBE924D7345628316 /* YYTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 318216A85125478E3D2C2381 /* YYTestViewController.m */; };
 		318218480569D95F157F9C4D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 318210C47FC9426EE660E848 /* Default-568h@2x.png */; };
 		318218A94CC1F6405B11A7EA /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31821AD005AC18161EED1DEA /* SenTestingKit.framework */; };
 		318218C6B2E03E6D33E38E51 /* JsonLiteAccumulator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3182158F8DDB28D3412FADF2 /* JsonLiteAccumulator.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -79,7 +81,10 @@
 		318215C0C9AC625352E27A54 /* JsonLiteDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonLiteDeserializer.h; sourceTree = "<group>"; };
 		318215DB22B1EEA43504E0B3 /* jsonlite_token_pool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsonlite_token_pool.h; sourceTree = "<group>"; };
 		318215FBE4D7B2839A4F75CB /* JsonLiteConverters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonLiteConverters.m; sourceTree = "<group>"; };
+		3182165B6F539C343627CFDA /* YYTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTestViewController.h; sourceTree = "<group>"; };
+		318216A85125478E3D2C2381 /* YYTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTestViewController.m; sourceTree = "<group>"; };
 		318216C68645E0C06941A0EE /* JsonLiteMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonLiteMetaData.h; sourceTree = "<group>"; };
+		3182173BA1185D19DAAE086F /* YYUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYUtils.m; sourceTree = "<group>"; };
 		3182177193A8B51C085785B8 /* jsonlite_token_pool.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = jsonlite_token_pool.c; sourceTree = "<group>"; };
 		318217B952C6E5A59F7FB53D /* jsonlite_token.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsonlite_token.h; sourceTree = "<group>"; };
 		318217F7758D62C1C11E4B21 /* JsonLiteSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonLiteSerializer.m; sourceTree = "<group>"; };
@@ -97,6 +102,7 @@
 		31821B2895086C295CFE7DA8 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		31821B5375FF9E24D62E6B96 /* jsonlite_builder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jsonlite_builder.h; sourceTree = "<group>"; };
 		31821B7B8813BF95A2B16A08 /* JsonLiteMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonLiteMetaData.m; sourceTree = "<group>"; };
+		31821C0ACA3684D34D184F80 /* YYUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYUtils.h; sourceTree = "<group>"; };
 		31821C87F8D854CD6F3DEB4B /* YYJSON-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "YYJSON-Prefix.pch"; sourceTree = "<group>"; };
 		31821CEB1B1F787D519C615A /* OKJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKJSON.m; sourceTree = "<group>"; };
 		31821CF0E7CDEC44147D19A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -287,6 +293,10 @@
 				31821C6E738EBF780B05F58D /* JSONKit */,
 				31821F4C66D730435A5F25B3 /* JsonLiteObjC */,
 				318219AF339B607D89DC8C1A /* Models */,
+				3182173BA1185D19DAAE086F /* YYUtils.m */,
+				31821C0ACA3684D34D184F80 /* YYUtils.h */,
+				3182165B6F539C343627CFDA /* YYTestViewController.h */,
+				318216A85125478E3D2C2381 /* YYTestViewController.m */,
 			);
 			path = YYJSON;
 			sourceTree = "<group>";
@@ -454,6 +464,8 @@
 				3182121D446DBFE0064E47BF /* JsonLiteDeserializer.m in Sources */,
 				3182134FC55340558539DB7D /* Player.m in Sources */,
 				31821B924DBC3AF9CBFFD649 /* Shot.m in Sources */,
+				31821702319806134EDE3CC2 /* YYUtils.m in Sources */,
+				318217ABBE924D7345628316 /* YYTestViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,9 +8,20 @@
 #import "NSObject+YYJSON.h"
 #import "JsonLiteConverters.h"
 #import "JsonLiteAccumulator.h"
+#import "JSONKit.h"
+#import "OKJSON.h"
 
 
 @implementation NSData (YYJSON)
+
+static YYJSONParserType yyjsonParserType = YYNSJSONSerialization;
+
++ (void)setYYJSONParserType:(YYJSONParserType)type
+{
+    yyjsonParserType = type;
+}
+
+
 - (id)toModel:(Class)modelClass
 {
     return [self toModel:modelClass forKey:nil];
@@ -99,18 +110,39 @@
 
 - (id)YYJSONObject
 {
-    //OKJSONParser
-    //return [OKJSON parse:self withError:nil];
-    //JSONKit
-    //return self.objectFromJSONData;
-    //JsonLiteObjC
-    JsonLiteParser *parser = [[JsonLiteParser alloc] initWithDepth:512];
-    JsonLiteAccumulator *acc = [[JsonLiteAccumulator alloc] initWithDepth:512];
-    parser.delegate = acc;
-    [parser parse:self];
-    return acc.object;
-    //iOS
-    //return [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingAllowFragments error:nil];
+
+    switch (yyjsonParserType)
+    {
+        case YYJSONKit:
+        {
+            //JSONKit
+            return self.objectFromJSONData;
+        }
+        case YYOKJSONParser:
+        {
+            //OKJSONParser
+            return [OKJSON parse:self withError:nil];
+        }
+        case YYJsonLiteParser:
+        {
+            //JsonLiteObjC
+            JsonLiteParser *parser = [[JsonLiteParser alloc] initWithDepth:512];
+            JsonLiteAccumulator *acc = [[JsonLiteAccumulator alloc] initWithDepth:512];
+            parser.delegate = acc;
+            [parser parse:self];
+            return acc.object;
+        }
+        case YYNSJSONSerialization:
+        {
+
+        }
+        default:
+        {
+            //NSJSONSerialization
+            return [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingAllowFragments error:nil];
+        }
+
+    }
 }
 
 - (id)YYJSONObjectForKey:(NSString *)key

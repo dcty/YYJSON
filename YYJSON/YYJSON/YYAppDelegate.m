@@ -7,9 +7,11 @@
 //
 
 #import "YYAppDelegate.h"
+#import "YYUtils.h"
 #import "NSData+YYJSON.h"
 #import "Shot.h"
-#import "Player.h"
+#import "YYTestViewController.h"
+
 
 @implementation YYAppDelegate
 
@@ -18,46 +20,44 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController = [YYTestViewController new];
     [self.window makeKeyAndVisible];
-
-    NSURL *url = [NSURL URLWithString:@"http://url.cn/DjjSlB"];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    NSArray *shots = [data toModels:[Shot class] forKey:@"shots"];
-    Player *player = [shots[0] player];
-    NSLog(@"url = %@", url);
     return YES;
 }
 
-- (void)applicationWillResignActive:(UIApplication *)application
+- (void)test
 {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    __block NSArray *array1 = nil;
+    __block NSArray *array2 = nil;
+    __block NSArray *array3 = nil;
+    __block NSArray *array4 = nil;
+    dispatch_sync(dispatch_get_global_queue(0, 0), ^{
+        NSURL *url = [NSURL URLWithString:@"http://url.cn/DjjSlB"];
+        __block NSData *data = [NSData dataWithContentsOfURL:url];
+        CGFloat time1 = YYTimeBlock(^{
+            [NSData setYYJSONParserType:YYNSJSONSerialization];
+            array1 = [data toModels:[Shot class] forKey:@"shots"];
+        });
+        CGFloat time2 = YYTimeBlock(^{
+            [NSData setYYJSONParserType:YYJSONKit];
+            array2 = [data toModels:[Shot class] forKey:@"shots"];
+        });
+        CGFloat time3 = YYTimeBlock(^{
+            [NSData setYYJSONParserType:YYJsonLiteParser];
+            array3 = [data toModels:[Shot class] forKey:@"shots"];
+        });
+        CGFloat time4 = YYTimeBlock(^{
+            [NSData setYYJSONParserType:YYOKJSONParser];
+            array4 = [data toModels:[Shot class] forKey:@"shots"];
+        });
 
-}
-
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-
-}
-
-- (void)applicationWillEnterForeground:(UIApplication *)application
-{
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-
-}
-
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-
+        NSMutableString *text = [[NSMutableString alloc] init];
+        [text appendFormat:@"NSJSONSerialization : %f\n", time1];
+        [text appendFormat:@"JSONKit : %f\n", time2];
+        [text appendFormat:@"JsonLiteParser : %f\n", time3];
+        [text appendFormat:@"OKJSONParser : %f\n", time4];
+        ALERT(text);
+    });
 }
 
 @end

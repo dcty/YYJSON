@@ -34,7 +34,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     if (!dictionary)
     {
         dictionary = [[NSMutableDictionary alloc] init];
-        if ([self YYSuper])
+        if ([self YYSuper] && ![[self superclass] isMemberOfClass:[NSObject class]])
         {
             [dictionary setValuesForKeysWithDictionary:[[self superclass] YYJSONKeyDict]];
         }
@@ -72,5 +72,34 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     free(properties);
     return propertyNames;
 }
+
+@end
+
+@implementation NSObject (Test)
+- (void)each:(void (^)(id key, id value))block
+{
+    NSArray *array = [self yyPropertiesOfClass:self.class];
+    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        block(obj, [self valueForKey:obj]);
+    }];
+}
+
+- (NSString *)YYDesc
+{
+    NSMutableString *sb = [[NSMutableString alloc] initWithFormat:@"%@\n", self.class];
+    [self each:^(id key, id value) {
+        [sb appendFormat:@"[%@ : %@]\n", key, value];
+    }];
+    [sb appendString:@"\n\n\n"];
+    if ([self isKindOfClass:[NSArray class]])
+    {
+        NSArray *array = (NSArray *) self;
+        [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [sb appendString:[obj YYDesc]];
+        }];
+    }
+    return sb;
+}
+
 
 @end

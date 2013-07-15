@@ -6,6 +6,15 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum
+{
+    YYNSJSONSerialization = 0,
+    YYJSONKit,
+    YYJsonLiteParser,
+    YYOKJSONParser
+
+} YYJSONParserType;
+
 @interface NSData (YYJSON)
 - (id)toModel:(Class)modelClass;
 
@@ -14,4 +23,6 @@
 - (NSArray *)toModels:(Class)modelClass;
 
 - (NSArray *)toModels:(Class)modelClass forKey:(NSString *)key;
+
++ (void)setYYJSONParserType:(YYJSONParserType)type;
 @end
