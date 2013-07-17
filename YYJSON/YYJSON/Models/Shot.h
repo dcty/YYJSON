@@ -26,4 +26,5 @@
 @property(nonatomic, strong) NSNumber *id;
 @property(nonatomic, copy) NSString *imageURLString;
 @property(nonatomic, strong) Player *player;
+@property(nonatomic, copy) NSString *testString;
 @end

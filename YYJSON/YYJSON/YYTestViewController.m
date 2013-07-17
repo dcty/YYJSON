@@ -8,8 +8,8 @@
 
 #import "YYTestViewController.h"
 #import "YYUtils.h"
-#import "NSData+YYJSON.h"
 #import "Shot.h"
+#import "YYJSONHelper.h"
 
 @interface YYTestViewController ()
 @property(strong, nonatomic) NSData *data;

@@ -5,7 +5,7 @@
 
 
 #import "Shot.h"
-#import "NSObject+YYJSON.h"
+#import "YYJSONHelper.h"
 
 
 @implementation Shot

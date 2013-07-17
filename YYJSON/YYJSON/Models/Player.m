@@ -5,10 +5,11 @@
 
 
 #import "Player.h"
-#import "NSObject+YYJSON.h"
+#import "YYJSONHelper.h"
 
 
 @implementation Player
+
 + (void)initialize
 {
     [super initialize];
