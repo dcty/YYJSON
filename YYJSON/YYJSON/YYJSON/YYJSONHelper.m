@@ -6,10 +6,6 @@
 
 #import <objc/runtime.h>
 #import "YYJSONHelper.h"
-#import "JsonLiteParser.h"
-#import "JsonLiteAccumulator.h"
-#import "OKJSON.h"
-#import "JSONKit.h"
 
 
 static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement);
@@ -166,6 +162,33 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 
 @end
 
+@implementation NSString(YYJSONHelper)
+- (id)toModel:(Class)modelClass
+{
+    return [self.toYYData toModel:modelClass];
+}
+
+- (id)toModel:(Class)modelClass forKey:(NSString *)jsonKey
+{
+    return [self.toYYData toModel:modelClass forKey:jsonKey];
+}
+
+- (NSArray *)toModels:(Class)modelClass
+{
+    return [self.toYYData toModels:modelClass];
+}
+
+- (NSArray *)toModels:(Class)modelClass forKey:(NSString *)jsonKey
+{
+    return [self.toYYData toModels:modelClass forKey:jsonKey];
+}
+
+- (NSData *)toYYData
+{
+    return [self dataUsingEncoding:NSUTF8StringEncoding];
+}
+
+@end
 
 @implementation NSDictionary (YYJSONHelper)
 - (NSString *)YYJSONString
@@ -181,14 +204,6 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 @end
 
 @implementation NSData (YYJSONHelper)
-
-static YYJSONParserType yyJsonParserType = YYNSJSONSerialization;
-
-+ (void)setYYJSONParserType:(YYJSONParserType)type
-{
-    yyJsonParserType = type;
-}
-
 
 - (id)toModel:(Class)modelClass
 {
@@ -284,39 +299,7 @@ static YYJSONParserType yyJsonParserType = YYNSJSONSerialization;
 
 - (id)YYJSONObject
 {
-
-    switch (yyJsonParserType)
-    {
-        case YYJSONKit:
-        {
-            //JSONKit
-            return self.objectFromJSONData;
-        }
-        case YYOKJSONParser:
-        {
-            //OKJSONParser
-            return [OKJSON parse:self withError:nil];
-        }
-        case YYJsonLiteParser:
-        {
-            //JsonLiteObjC
-            JsonLiteParser *parser = [[JsonLiteParser alloc] initWithDepth:512];
-            JsonLiteAccumulator *acc = [[JsonLiteAccumulator alloc] initWithDepth:512];
-            parser.delegate = acc;
-            [parser parse:self];
-            return acc.object;
-        }
-        case YYNSJSONSerialization:
-        {
-
-        }
-        default:
-        {
-            //NSJSONSerialization
-            return [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingAllowFragments error:nil];
-        }
-
-    }
+    return [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingAllowFragments error:nil];
 }
 
 - (id)YYJSONObjectForKey:(NSString *)key

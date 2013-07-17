@@ -50,6 +50,16 @@
 @end
 
 
+@interface NSString (YYJSONHelper)
+- (id)toModel:(Class)modelClass;
+
+- (id)toModel:(Class)modelClass forKey:(NSString *)jsonKey;
+
+- (NSArray *)toModels:(Class)modelClass;
+
+- (NSArray *)toModels:(Class)modelClass forKey:(NSString *)jsonKey;
+@end
+
 @interface NSDictionary (YYJSONHelper)
 /**
 *   返回jsonString
@@ -90,11 +100,6 @@ typedef enum
 *   传入modelClass和key，返回对应的实例集合
 */
 - (NSArray *)toModels:(Class)modelClass forKey:(NSString *)key;
-
-/**
-*   设置JsonToNSObject采用的解析器，目测下个版本会去掉，只采用系统自带的。
-*/
-+ (void)setYYJSONParserType:(YYJSONParserType)type;
 
 /**
 *   返回jsonString

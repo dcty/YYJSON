@@ -20,15 +20,13 @@ Demo中有体现。
 -  NSData (YYJSONHelper)
 ------
  -(id)YYJSONObject
-
-这个方法返回JSON对象，可以选择自己习惯的JSON解析库   
-可以自行查看源文件，我写了如下  
+####	根据苹果官网开发者版块的数据显示，截止到 6 月 29 日，已有 94% 的 iOS 用户已经升级了 iOS 6。仅有 5% 的用户停留在 iOS 5，iOS 5 以下的版本只有 1%。  
+所以目前只采用
 >1. iOS自带的NSJSONSerialization  
-2.  JSONKit  
+<strike> 2.  JSONKit  
 3.  OKJSONParser （号称自己是最快的）  
-4. JsonLiteParser （也是号称自己是最快的）
-
-速度方面我没有进行测试
+4. JsonLiteParser （也是号称自己是最快的）  
+速度方面我没有进行测试</strike>
 
 ***
 使用方法

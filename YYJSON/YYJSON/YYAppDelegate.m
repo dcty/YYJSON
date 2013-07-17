@@ -9,7 +9,6 @@
 #import "YYAppDelegate.h"
 #import "YYUtils.h"
 #import "Shot.h"
-#import "YYTestViewController.h"
 #import "Player.h"
 #import "YYJSONHelper.h"
 
@@ -21,20 +20,38 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-    self.window.rootViewController = [YYTestViewController new];
     [self.window makeKeyAndVisible];
-//    [self test];
+    [self testData];
+    [self testString];
     return YES;
 }
 
-- (void)test
+- (void)testData
 {
-    NSURL *url = [NSURL URLWithString:@"http://url.cn/DjjSlB"];
-    NSData *data = [NSData dataWithContentsOfURL:url];
-    NSArray *array = [data toModels:[Shot class] forKey:@"shots"];
-    Shot *shot = array[0];
-    Player *player = shot.player;
-    ALERT(player.YYJSONString);
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSURL *url = [NSURL URLWithString:@"http://url.cn/DjjSlB"];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        NSArray *array = [data toModels:[Shot class] forKey:@"shots"];
+        Shot *shot = array[0];
+        Player *player = shot.player;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ALERT([@"data\n" stringByAppendingString:player.YYJSONString]);
+        });
+    });
+}
+
+- (void)testString
+{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSURL *url = [NSURL URLWithString:@"http://url.cn/DjjSlB"];
+        NSString *string = [NSString stringWithContentsOfURL:url encoding:4 error:nil];
+        NSArray *array = [string toModels:[Shot class] forKey:@"shots"];
+        Shot *shot = array[0];
+        Player *player = shot.player;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            ALERT([@"string\n" stringByAppendingString:player.YYJSONString]);
+        });
+    });
 }
 
 @end
