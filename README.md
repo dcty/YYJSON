@@ -3,12 +3,21 @@ YYJSON
 
 将JSON数据直接转成NSObject  
 支持 NSString，NSNumber，int，float，BOOL，NSArray，OtherModel。  
+
+	update：2013-07-17
+	新增 
+
+	- (NSString *)YYJSONString;
+
+	- (NSData *)YYJSONData;
+	
+
 Demo中有体现。
 
 ***
 支持自己选择JSON解析器
 
--  NSData (YYJSON)
+-  NSData (YYJSONHelper)
 ------
  -(id)YYJSONObject
 
