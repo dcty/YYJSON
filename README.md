@@ -21,12 +21,7 @@ Demo中有体现。
 ------
  -(id)YYJSONObject
 ####	根据苹果官网开发者版块的数据显示，截止到 6 月 29 日，已有 94% 的 iOS 用户已经升级了 iOS 6。仅有 5% 的用户停留在 iOS 5，iOS 5 以下的版本只有 1%。  
-所以目前只采用
->1. iOS自带的NSJSONSerialization  
-<strike> 2.  JSONKit  
-3.  OKJSONParser （号称自己是最快的）  
-4. JsonLiteParser （也是号称自己是最快的）  
-速度方面我没有进行测试</strike>
+所以目前只采用iOS自带的NSJSONSerialization  
 
 ***
 使用方法
