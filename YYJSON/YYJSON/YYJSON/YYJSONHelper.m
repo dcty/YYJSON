@@ -4,7 +4,6 @@
 //
 
 
-#import <objc/runtime.h>
 #import "YYJSONHelper.h"
 
 
@@ -84,8 +83,8 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 
 
 /**
-*  应该比较脆弱，不支持太复杂的对象。
-*/
+ *  应该比较脆弱，不支持太复杂的对象。
+ */
 - (NSDictionary *)YYJSONDictionary
 {
     if ([self isKindOfClass:[NSArray class]])
@@ -162,7 +161,7 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 
 @end
 
-@implementation NSString(YYJSONHelper)
+@implementation NSString (YYJSONHelper)
 - (id)toModel:(Class)modelClass
 {
     return [self.toYYData toModel:modelClass];
@@ -263,26 +262,27 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
     [YYJSONKeyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if ([dict[key] isKindOfClass:[NSArray class]])
         {
-            if (NSStringFromClass(obj))
+            if (NSClassFromString(obj))
             {
                 NSArray *array = [self objectsForModelClass:NSClassFromString(obj) fromArray:dict[key]];
                 [model setValue:array forKey:obj];
             }
             else
             {
-                [model setValue:obj forKey:obj];
+                [model setValue:dict[key] forKey:obj];
             }
         }
         else if ([dict[key] isKindOfClass:[NSDictionary class]])
         {
-
+            
             Class otherClass = NSClassFromString(obj);
             id object = [self objectForModelClass:otherClass fromDict:dict[key] withJSONKeyDict:[otherClass YYJSONKeyDict]];
             [model setValue:object forKey:obj];
         }
         else
         {
-            if (![dict[key] isKindOfClass:[NSNull class]])
+            id value = dict[key];
+            if (![value isKindOfClass:[NSNull class]] && value != nil)
             {
                 [model setValue:dict[key] forKey:obj];
             }
@@ -318,8 +318,8 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 }
 
 /**
-*   循环集合将每个对象转为字典，得到字典集合，然后转为jsonData
-*/
+ *   循环集合将每个对象转为字典，得到字典集合，然后转为jsonData
+ */
 - (NSData *)YYJSONData
 {
     NSMutableArray *jsonDictionaries = [[NSMutableArray alloc] init];
