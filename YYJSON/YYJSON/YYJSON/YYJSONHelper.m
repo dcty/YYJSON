@@ -2,6 +2,7 @@
 // Created by ivan on 13-7-17.
 //
 //
+#import <objc/runtime.h>
 
 
 #import "YYJSONHelper.h"
