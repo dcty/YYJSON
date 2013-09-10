@@ -2,9 +2,8 @@
 // Created by ivan on 13-7-17.
 //
 //
+
 #import <objc/runtime.h>
-
-
 #import "YYJSONHelper.h"
 
 
@@ -13,6 +12,14 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement);
 @implementation NSObject (YYJSONHelper)
 
 static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
+
+#if DEBUG
+- (NSString *)YY
+{
+    return self.YYJSONString;
+}
+
+#endif
 
 + (BOOL)YYSuper
 {
@@ -33,7 +40,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 + (NSMutableDictionary *)_YYJSONKeyDict
 {
     NSString *YYObjectKey = [NSString stringWithFormat:@"YY_JSON_%@", NSStringFromClass([self class])];
-    NSMutableDictionary *dictionary = YY_JSON_OBJECT_KEYDICTS[YYObjectKey];
+    NSMutableDictionary *dictionary = [YY_JSON_OBJECT_KEYDICTS objectForKey:YYObjectKey];
     if (!dictionary)
     {
         dictionary = [[NSMutableDictionary alloc] init];
@@ -278,7 +285,7 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
             
             Class otherClass = NSClassFromString(obj);
             id object = [self objectForModelClass:otherClass fromDict:dict[key] withJSONKeyDict:[otherClass YYJSONKeyDict]];
-            [model setValue:object forKey:obj];
+            [model setValue:object forKey:key];
         }
         else
         {
@@ -305,7 +312,14 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 
 - (id)YYJSONObjectForKey:(NSString *)key
 {
-    return key ? ([[self YYJSONObject] objectForKey:key]) : ([self YYJSONObject]);
+    if (key && [[self YYJSONObject] isKindOfClass:[NSDictionary class]])
+    {
+        return [[self YYJSONObject] objectForKey:key];
+    }
+    else
+    {
+        return [self YYJSONObject];
+    }
 }
 
 
