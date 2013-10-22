@@ -4,10 +4,8 @@
 //
 
 
-#import <Foundation/Foundation.h>
 
-
-@interface Player : NSObject
+@interface Player : NSObject <YYJSONHelperProtocol>
 
 @property(nonatomic) int rebounds_count;
 @property(nonatomic) int likes_received_count;

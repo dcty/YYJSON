@@ -3,7 +3,7 @@
 //
 //
 
-#import <objc/runtime.h>
+
 #import "YYJSONHelper.h"
 
 
@@ -26,11 +26,6 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     return NO;
 }
 
-+ (void)load
-{
-    YY_JSON_OBJECT_KEYDICTS = [[NSMutableDictionary alloc] init];
-}
-
 + (NSDictionary *)YYJSONKeyDict
 {
     return [self _YYJSONKeyDict];
@@ -39,8 +34,12 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 
 + (NSMutableDictionary *)_YYJSONKeyDict
 {
+    if (!YY_JSON_OBJECT_KEYDICTS)
+    {
+        YY_JSON_OBJECT_KEYDICTS = [[NSMutableDictionary alloc] init];
+    }
     NSString *YYObjectKey = [NSString stringWithFormat:@"YY_JSON_%@", NSStringFromClass([self class])];
-    NSMutableDictionary *dictionary = [YY_JSON_OBJECT_KEYDICTS objectForKey:YYObjectKey];
+    NSMutableDictionary *dictionary = [YY_JSON_OBJECT_KEYDICTS yyObjectForKey:YYObjectKey];
     if (!dictionary)
     {
         dictionary = [[NSMutableDictionary alloc] init];
@@ -56,7 +55,15 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
         YY_swizzleInstanceMethod(self, @selector(setValue:forUndefinedKey:), @selector(YY_setValue:forUndefinedKey:));
         NSArray *properties = [self yyPropertiesOfClass:[self class]];
         [properties enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [dictionary setObject:obj forKey:obj];
+            NSString *typeName = [self propertyConformsToProtocol:@protocol(YYJSONHelperProtocol) propertyName:obj];
+            if (typeName)
+            {
+                [dictionary setObject:typeName forKey:obj];
+            }
+            else
+            {
+                [dictionary setObject:obj forKey:obj];
+            }
         }];
         [YY_JSON_OBJECT_KEYDICTS setObject:dictionary forKey:YYObjectKey];
     }
@@ -91,8 +98,8 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 
 
 /**
- *  应该比较脆弱，不支持太复杂的对象。
- */
+*  应该比较脆弱，不支持太复杂的对象。
+*/
 - (NSDictionary *)YYJSONDictionary
 {
     if ([self isKindOfClass:[NSArray class]])
@@ -167,6 +174,49 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
     return propertyNames;
 }
 
++ (NSString *)propertyConformsToProtocol:(Protocol *)protocol propertyName:(NSString *)propertyName
+{
+    NSString *typeName = [self typeOfPropertyNamed:propertyName];
+    if ([typeName isKindOfClass:[NSString class]])
+    {
+        typeName = [typeName stringByReplacingOccurrencesOfString:@"T@" withString:@""];
+        typeName = [typeName stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+    }
+    NSObject *obj = [NSClassFromString(typeName) new];
+    if ([obj conformsToProtocol:protocol])
+    {
+        return typeName;
+    }
+    return nil;
+}
+
++ (NSString *)typeOfPropertyNamed:(NSString *)name
+{
+    objc_property_t property = class_getProperty(self, [name UTF8String]);
+    if (property == NULL )
+    {
+        return (NULL);
+    }
+    return [NSString stringWithUTF8String:(property_getTypeString(property))];
+}
+
+const char *property_getTypeString(objc_property_t property) {
+    const char *attrs = property_getAttributes(property);
+    if (attrs == NULL )
+        return (NULL);
+
+    static char buffer[256];
+    const char *e = strchr(attrs, ',');
+    if (e == NULL )
+        return (NULL);
+
+    int len = (int) (e - attrs);
+    memcpy( buffer, attrs, len );
+    buffer[len] = '\0';
+
+    return (buffer);
+}
+
 @end
 
 @implementation NSString (YYJSONHelper)
@@ -207,6 +257,16 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
     }
     return nil;
 }
+
+- (id)yyObjectForKey:(id)key
+{
+    if (key)
+    {
+        [self objectForKey:key];
+    }
+    return nil;
+}
+
 
 @end
 
@@ -282,7 +342,7 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
         }
         else if ([dict[key] isKindOfClass:[NSDictionary class]])
         {
-            
+
             Class otherClass = NSClassFromString(obj);
             id object = [self objectForModelClass:otherClass fromDict:dict[key] withJSONKeyDict:[otherClass YYJSONKeyDict]];
             [model setValue:object forKey:key];
@@ -333,8 +393,8 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 }
 
 /**
- *   循环集合将每个对象转为字典，得到字典集合，然后转为jsonData
- */
+*   循环集合将每个对象转为字典，得到字典集合，然后转为jsonData
+*/
 - (NSData *)YYJSONData
 {
     NSMutableArray *jsonDictionaries = [[NSMutableArray alloc] init];

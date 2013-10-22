@@ -5,11 +5,12 @@
 
 
 #import <Foundation/Foundation.h>
+#import "YYJSONHelper.h"
 
 @class Player;
 
+@interface Shot : NSObject <YYJSONHelperProtocol>
 
-@interface Shot : NSObject
 @property(nonatomic, copy) NSString *image_teaser_url;
 @property(nonatomic, copy) NSString *created_at;
 @property(nonatomic, strong) NSNumber *rebounds_count;

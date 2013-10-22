@@ -3,9 +3,11 @@
 //
 //
 
+#import "objc/runtime.h"
 
-#import <Foundation/Foundation.h>
+@protocol YYJSONHelperProtocol
 
+@end
 
 @interface NSObject (YYJSONHelper)
 
@@ -46,7 +48,11 @@
 /**
 *   根据传入的class返回属性集合
 */
+const char *property_getTypeString(objc_property_t property);
+
 - (NSArray *)yyPropertiesOfClass:(Class)aClass;
+
++ (NSString *)propertyConformsToProtocol:(Protocol *)protocol propertyName:(NSString *)propertyName;
 @end
 
 
@@ -65,6 +71,9 @@
 *   返回jsonString
 */
 - (NSString *)YYJSONString;
+
+- (id)yyObjectForKey:(id)key;
+
 @end
 
 /**
