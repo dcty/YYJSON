@@ -14,7 +14,8 @@
 //+ (void)initialize
 //{
 //    [super initialize];
-////    [self bindYYJSONKey:@"audioParts" toProperty:@"AudioPartModel"];
+//     // toProperty填写audioParts里存放的对象的类名
+//    [self bindYYJSONKey:@"audioParts" toProperty:@"AudioPartModel"];
 //}
 
 @end
