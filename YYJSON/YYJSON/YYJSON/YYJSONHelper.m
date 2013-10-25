@@ -181,6 +181,20 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
     {
         typeName = [typeName stringByReplacingOccurrencesOfString:@"T@" withString:@""];
         typeName = [typeName stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        NSRange range = [typeName rangeOfString:@"Array"];
+        if(range.location != NSNotFound)
+        {
+            NSRange beginRange = [typeName rangeOfString:@"<"];
+            NSRange endRange = [typeName rangeOfString:@">"];
+            if (beginRange.location !=NSNotFound && endRange.location != NSNotFound)
+            {
+                NSString *protocalName = [typeName substringWithRange:NSMakeRange(beginRange.location+beginRange.length, endRange.location-beginRange.location-1)];
+                if (NSClassFromString(protocalName))
+                {
+                    return protocalName;
+                }
+            }
+        }
     }
     NSObject *obj = [NSClassFromString(typeName) new];
     if ([obj conformsToProtocol:protocol])

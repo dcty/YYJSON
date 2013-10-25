@@ -11,10 +11,10 @@
 
 @implementation AudioModel
 
-+ (void)initialize
-{
-    [super initialize];
-    [self bindYYJSONKey:@"audioParts" toProperty:@"AudioPartModel"];
-}
+//+ (void)initialize
+//{
+//    [super initialize];
+////    [self bindYYJSONKey:@"audioParts" toProperty:@"AudioPartModel"];
+//}
 
 @end
