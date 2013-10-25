@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C225B60181A519D003F338D /* test.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C225B5F181A519D003F338D /* test.json */; };
+		2C225B63181A51E5003F338D /* AudioModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C225B62181A51E5003F338D /* AudioModel.m */; };
+		2C225B66181A51FF003F338D /* AudioPartModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C225B65181A51FF003F338D /* AudioPartModel.m */; };
 		31821329F8B13BC4B4B2C57F /* YYJSONTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 318213587480596667C4A030 /* YYJSONTests.m */; };
 		3182134FC55340558539DB7D /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 3182154F80B3D1A4811E04C1 /* Player.m */; };
 		31821355128AEC074663DCF2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 318218768AF3398FBCADC726 /* Foundation.framework */; };
@@ -38,6 +41,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2C225B5F181A519D003F338D /* test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = test.json; sourceTree = "<group>"; };
+		2C225B61181A51E5003F338D /* AudioModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioModel.h; sourceTree = "<group>"; };
+		2C225B62181A51E5003F338D /* AudioModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioModel.m; sourceTree = "<group>"; };
+		2C225B64181A51FF003F338D /* AudioPartModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPartModel.h; sourceTree = "<group>"; };
+		2C225B65181A51FF003F338D /* AudioPartModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPartModel.m; sourceTree = "<group>"; };
 		31821040E3AA057C30B4489F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		318210C47FC9426EE660E848 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		3182118291B744B898D5C3D3 /* YYJSON-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = "YYJSON-Info.plist"; sourceTree = "<group>"; };
@@ -150,6 +158,7 @@
 				31821857339D90D68A6D20F4 /* Default.png */,
 				318212D45D83E5C9ABDEE001 /* Default@2x.png */,
 				318210C47FC9426EE660E848 /* Default-568h@2x.png */,
+				2C225B5F181A519D003F338D /* test.json */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -161,6 +170,10 @@
 				3182154F80B3D1A4811E04C1 /* Player.m */,
 				31821FBFFC37AC9A6F2865CB /* Player.h */,
 				31821A093297BBA173C74BB3 /* Shot.m */,
+				2C225B61181A51E5003F338D /* AudioModel.h */,
+				2C225B62181A51E5003F338D /* AudioModel.m */,
+				2C225B64181A51FF003F338D /* AudioPartModel.h */,
+				2C225B65181A51FF003F338D /* AudioPartModel.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -270,6 +283,7 @@
 				318219BB3C956280F866776D /* Default.png in Resources */,
 				318213D86A07ADBFEACECDF4 /* Default@2x.png in Resources */,
 				318218480569D95F157F9C4D /* Default-568h@2x.png in Resources */,
+				2C225B60181A519D003F338D /* test.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,6 +324,8 @@
 				31821B924DBC3AF9CBFFD649 /* Shot.m in Sources */,
 				31821702319806134EDE3CC2 /* YYUtils.m in Sources */,
 				31821551E1F15FDE7ED441BB /* YYJSONHelper.m in Sources */,
+				2C225B63181A51E5003F338D /* AudioModel.m in Sources */,
+				2C225B66181A51FF003F338D /* AudioPartModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

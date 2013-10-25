@@ -11,6 +11,7 @@
 #import "Shot.h"
 #import "Player.h"
 #import "YYJSONHelper.h"
+#import "AudioModel.h"
 
 
 @implementation YYAppDelegate
@@ -21,6 +22,10 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
+    NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"]];
+    AudioModel *audioModel = [data toModel:[AudioModel class]];
+    
     [self testData];
     [self testString];
     return YES;

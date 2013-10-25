@@ -262,7 +262,7 @@ const char *property_getTypeString(objc_property_t property) {
 {
     if (key)
     {
-        [self objectForKey:key];
+       return [self objectForKey:key];
     }
     return nil;
 }
@@ -333,7 +333,7 @@ const char *property_getTypeString(objc_property_t property) {
             if (NSClassFromString(obj))
             {
                 NSArray *array = [self objectsForModelClass:NSClassFromString(obj) fromArray:dict[key]];
-                [model setValue:array forKey:obj];
+                [model setValue:array forKey:key];
             }
             else
             {
