@@ -605,7 +605,14 @@ const char *property_getTypeString(objc_property_t property) {
                 }
                 else
                 {
-                    result = [obj toModels:parser.clazz];
+                    if ([obj isKindOfClass:[NSDictionary class]])
+                    {
+                        result = [[(NSDictionary *)obj YYJSONString] toModel:parser.clazz];
+                    }
+                    else
+                    {
+                        result = [obj toModels:parser.clazz];
+                    }
                 }
             }
             else

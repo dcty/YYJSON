@@ -10,6 +10,8 @@
 		2C225B60181A519D003F338D /* test.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C225B5F181A519D003F338D /* test.json */; };
 		2C225B63181A51E5003F338D /* AudioModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C225B62181A51E5003F338D /* AudioModel.m */; };
 		2C225B66181A51FF003F338D /* AudioPartModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C225B65181A51FF003F338D /* AudioPartModel.m */; };
+		2C3AC9D9196903F600D6FC34 /* test1.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C3AC9D8196903F600D6FC34 /* test1.json */; };
+		2C3AC9DC1969041700D6FC34 /* Test1.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3AC9DB1969041700D6FC34 /* Test1.m */; };
 		31821329F8B13BC4B4B2C57F /* YYJSONTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 318213587480596667C4A030 /* YYJSONTests.m */; };
 		3182134FC55340558539DB7D /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 3182154F80B3D1A4811E04C1 /* Player.m */; };
 		31821355128AEC074663DCF2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 318218768AF3398FBCADC726 /* Foundation.framework */; };
@@ -46,6 +48,9 @@
 		2C225B62181A51E5003F338D /* AudioModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioModel.m; sourceTree = "<group>"; };
 		2C225B64181A51FF003F338D /* AudioPartModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPartModel.h; sourceTree = "<group>"; };
 		2C225B65181A51FF003F338D /* AudioPartModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPartModel.m; sourceTree = "<group>"; };
+		2C3AC9D8196903F600D6FC34 /* test1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = test1.json; sourceTree = "<group>"; };
+		2C3AC9DA1969041700D6FC34 /* Test1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Test1.h; sourceTree = "<group>"; };
+		2C3AC9DB1969041700D6FC34 /* Test1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Test1.m; sourceTree = "<group>"; };
 		31821040E3AA057C30B4489F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		318210C47FC9426EE660E848 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		3182118291B744B898D5C3D3 /* YYJSON-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = "YYJSON-Info.plist"; sourceTree = "<group>"; };
@@ -188,6 +193,9 @@
 				318219AF339B607D89DC8C1A /* Models */,
 				3182173BA1185D19DAAE086F /* YYUtils.m */,
 				31821C0ACA3684D34D184F80 /* YYUtils.h */,
+				2C3AC9D8196903F600D6FC34 /* test1.json */,
+				2C3AC9DA1969041700D6FC34 /* Test1.h */,
+				2C3AC9DB1969041700D6FC34 /* Test1.m */,
 			);
 			path = YYJSON;
 			sourceTree = "<group>";
@@ -284,6 +292,7 @@
 				318213D86A07ADBFEACECDF4 /* Default@2x.png in Resources */,
 				318218480569D95F157F9C4D /* Default-568h@2x.png in Resources */,
 				2C225B60181A519D003F338D /* test.json in Resources */,
+				2C3AC9D9196903F600D6FC34 /* test1.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +330,7 @@
 				31821483C72E1A1E73E7217E /* main.m in Sources */,
 				31821C78B8BD1423F7774049 /* YYAppDelegate.m in Sources */,
 				3182134FC55340558539DB7D /* Player.m in Sources */,
+				2C3AC9DC1969041700D6FC34 /* Test1.m in Sources */,
 				31821B924DBC3AF9CBFFD649 /* Shot.m in Sources */,
 				31821702319806134EDE3CC2 /* YYUtils.m in Sources */,
 				31821551E1F15FDE7ED441BB /* YYJSONHelper.m in Sources */,

@@ -11,6 +11,7 @@
 #import "Shot.h"
 #import "Player.h"
 #import "AudioModel.h"
+#import "Test1.h"
 
 
 @implementation YYAppDelegate
@@ -25,6 +26,14 @@
     NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"]];
     AudioModel *audioModel = [data toModel:[AudioModel class]];
 
+    NSData *data1 = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test1" ofType:@"json"]];
+    Test1 *test1 = [data1 toModel:[Test1 class]];
+    
+    YYJSONParser *dataParser = [YYJSONParser objectWithKey:@"data" clazz:[Data class]];
+    [data1 parseToObjectWithParsers:@[dataParser]];
+    Data *result = dataParser.result;
+    
+    
     [self testData];
     [self testString];
     [self testParser];
