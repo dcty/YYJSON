@@ -8,6 +8,7 @@
 
 
 @interface YYUtils : NSObject
-CGFloat YYTimeBlock (void (^block)(void));
+CGFloat YYTimeBlock(void (^block)(void));
+
 void ALERT(NSString *msg);
 @end

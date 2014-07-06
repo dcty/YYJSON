@@ -1,12 +1,10 @@
-{"audioSrc" : "audio/p02.mp3",
- "audioParts" :
- [
-	 {
-		 "partID" : "p1",
-		 "begin" : 1.214658,
-		 "end" : 6.946584
-	 }
- ],
- "wordsOfGame" :
- []}
+{"audioSrc": "audio/p02.mp3",
+    "audioParts": [
+        {
+            "partID": "p1",
+            "begin": 1.214658,
+            "end": 6.946584
+        }
+    ],
+    "wordsOfGame": []}
 

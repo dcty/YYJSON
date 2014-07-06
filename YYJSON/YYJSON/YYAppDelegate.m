@@ -10,7 +10,6 @@
 #import "YYUtils.h"
 #import "Shot.h"
 #import "Player.h"
-#import "YYJSONHelper.h"
 #import "AudioModel.h"
 
 
@@ -22,19 +21,20 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-    
+
     NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"]];
     AudioModel *audioModel = [data toModel:[AudioModel class]];
-    
+
     [self testData];
     [self testString];
+    [self testParser];
     return YES;
 }
 
 - (void)testData
 {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSURL *url = [NSURL URLWithString:@"http://url.cn/DjjSlB"];
+        NSURL *url = [NSURL URLWithString:@"http://api.dribbble.com/shots/43424/rebounds"];
         NSData *data = [NSData dataWithContentsOfURL:url];
         NSArray *array = [data toModels:[Shot class] forKey:@"shots"];
         Shot *shot = array[0];
@@ -48,7 +48,7 @@
 - (void)testString
 {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSURL *url = [NSURL URLWithString:@"http://url.cn/DjjSlB"];
+        NSURL *url = [NSURL URLWithString:@"http://api.dribbble.com/shots/43424/rebounds"];
         NSString *string = [NSString stringWithContentsOfURL:url encoding:4 error:nil];
         NSArray *array = [string toModels:[Shot class] forKey:@"shots"];
         Shot *shot = array[0];
@@ -56,6 +56,24 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             ALERT([@"string\n" stringByAppendingString:player.YYJSONString]);
         });
+    });
+}
+
+- (void)testParser
+{
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSURL *url = [NSURL URLWithString:@"http://api.dribbble.com/shots/43424/rebounds"];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        if (data)
+        {
+            YYJSONParser *shotParser = [YYJSONParser objectWithKey:@"shots" clazz:[Shot class]];
+            [data parseToObjectWithParsers:@[shotParser]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSArray *shots = shotParser.result;
+                Shot *shot = shots[0];
+                ALERT([@"parser\n" stringByAppendingString:shot.YYJSONString]);
+            });
+        }
     });
 }
 

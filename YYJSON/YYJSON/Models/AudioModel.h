@@ -10,8 +10,8 @@
 #import "AudioPartModel.h"
 
 @interface AudioModel : NSObject
-@property (copy, nonatomic) NSString	*audioSrc;
-@property(strong, nonatomic) NSArray	<AudioPartModel> *audioParts;
-@property(strong, nonatomic) NSArray	*wordsOfGame;
+@property(copy, nonatomic) NSString *audioSrc;
+@property(strong, nonatomic) NSArray <AudioPartModel> *audioParts;
+@property(strong, nonatomic) NSArray *wordsOfGame;
 @end
 

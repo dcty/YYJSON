@@ -9,6 +9,21 @@
 
 @end
 
+@interface YYJSONParser : NSObject
+@property(strong, nonatomic) Class clazz;   //要转换成什么class
+@property(assign, nonatomic) BOOL single;   //是否单个
+@property(strong, nonatomic) NSString *key; //key
+@property(strong, nonatomic) id result;     //结果
+@property(readonly, nonatomic) id smartResult;
+
+- (instancetype)initWithKey:(NSString *)key clazz:(Class)clazz single:(BOOL)single;
+
++ (instancetype)objectWithKey:(NSString *)key clazz:(Class)clazz single:(BOOL)single;
+
++ (instancetype)objectWithKey:(NSString *)key clazz:(Class)clazz;
+
+@end
+
 @interface NSObject (YYJSONHelper)
 
 /**
@@ -42,6 +57,17 @@
 *   返回json字典，不支持NSArray
 */
 - (NSDictionary *)YYJSONDictionary;
+
+/**
+*   防止服务端返回的数据不对 导致没找到此方法造成的闪退
+*/
+- (NSArray *)toModels:(Class)modelClass;
+
+- (NSArray *)toModels:(Class)modelClass forKey:(NSString *)key;
+
+- (id)toModel:(Class)modelClass;
+
+- (id)toModel:(Class)modelClass forKey:(NSString *)key;
 @end
 
 @interface NSObject (YYProperties)
@@ -57,73 +83,35 @@ const char *property_getTypeString(objc_property_t property);
 
 
 @interface NSString (YYJSONHelper)
-- (id)toModel:(Class)modelClass;
 
-- (id)toModel:(Class)modelClass forKey:(NSString *)jsonKey;
-
-- (NSArray *)toModels:(Class)modelClass;
-
-- (NSArray *)toModels:(Class)modelClass forKey:(NSString *)jsonKey;
 @end
 
 @interface NSDictionary (YYJSONHelper)
-/**
-*   返回jsonString
-*/
-- (NSString *)YYJSONString;
 
 - (id)yyObjectForKey:(id)key;
 
 @end
 
-/**
-*   默认采用iOS5自带的解析，经过我不科学的测试，系统自带的解析是最快的，所以推荐大家使用系统自带的
-*   这里的枚举只作用于 json to NSObject ，NSObject to jsonString jsonData等全部使用系统自带的
-*/
-typedef enum
-{
-    YYNSJSONSerialization = 0,
-    YYJSONKit,
-    YYJsonLiteParser,
-    YYOKJSONParser
-
-} YYJSONParserType;
-
 @interface NSData (YYJSONHelper)
 /**
-*   传入modelClass，返回对应的实例
+*   @brief  通过key拿到json数据
 */
-- (id)toModel:(Class)modelClass;
+- (id)valueForJsonKey:(NSString *)key;
 
 /**
-*   传入modelClass和json的key，返回对用的实例
+*   @brief  通过key集合拿到对应的key的json数据字典
 */
-- (id)toModel:(Class)modelClass forKey:(NSString *)key;
+- (NSDictionary *)dictForJsonKeys:(NSArray *)keys;
 
 /**
-*   传入modelClass，返回对应的实例集合
+*   @brief  解析结果直接在parser的result字段里面，这个方法主要是为了提高解析的效率
+*   如果一个json中有多个key ex：{用户列表，商品列表、打折列表}那么传3个解析器进来就好了，不会对data进行三次重复的解析操作
+*   @param  parsers 要解析为json的解析器集合
 */
-- (NSArray *)toModels:(Class)modelClass;
 
-/**
-*   传入modelClass和key，返回对应的实例集合
-*/
-- (NSArray *)toModels:(Class)modelClass forKey:(NSString *)key;
-
-/**
-*   返回jsonString
-*/
-- (NSString *)YYJSONString;
+- (void)parseToObjectWithParsers:(NSArray *)parsers;
 @end
 
 @interface NSArray (YYJSONHelper)
-/**
-*   返回jsonString
-*/
-- (NSString *)YYJSONString;
 
-/**
-*   返回jsonData
-*/
-- (NSData *)YYJSONData;
 @end

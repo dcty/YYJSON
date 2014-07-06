@@ -5,7 +5,6 @@
 
 
 #import "Shot.h"
-#import "YYJSONHelper.h"
 
 
 @implementation Shot

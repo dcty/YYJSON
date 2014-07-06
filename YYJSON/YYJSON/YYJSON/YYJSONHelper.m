@@ -6,6 +6,48 @@
 
 #import "YYJSONHelper.h"
 
+@implementation YYJSONParser
+- (instancetype)initWithKey:(NSString *)key clazz:(Class)clazz single:(BOOL)single
+{
+    self = [super init];
+    if (self)
+    {
+        self.key = key;
+        self.clazz = clazz;
+        self.single = single;
+    }
+    return self;
+}
+
+
++ (instancetype)objectWithKey:(NSString *)key clazz:(Class)clazz single:(BOOL)single
+{
+    return [[self alloc] initWithKey:key clazz:clazz single:single];
+}
+
++ (instancetype)objectWithKey:(NSString *)key clazz:(Class)clazz
+{
+    return [[self alloc] initWithKey:key clazz:clazz single:NO];
+}
+
+/**
+*   如果result是一个集合，并且只有一个元素，就直接返回集合中的元素。
+*/
+- (id)smartResult
+{
+    if ([_result isKindOfClass:[NSArray class]])
+    {
+        NSArray *array = (NSArray *) _result;
+        if (array.count == 1)
+        {
+            return array.firstObject;
+        }
+    }
+    return _result;
+}
+
+
+@end
 
 static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement);
 
@@ -14,6 +56,7 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement);
 static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 
 #if DEBUG
+
 - (NSString *)YY
 {
     return self.YYJSONString;
@@ -38,11 +81,11 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     {
         YY_JSON_OBJECT_KEYDICTS = [[NSMutableDictionary alloc] init];
     }
-    NSString            *YYObjectKey = [NSString stringWithFormat:@"YY_JSON_%@", NSStringFromClass([self class])];
-    NSMutableDictionary *dictionary  = [YY_JSON_OBJECT_KEYDICTS yyObjectForKey:YYObjectKey];
+    NSString *YYObjectKey = [NSString stringWithFormat:@"YY_JSON_%@", NSStringFromClass([self class])];
+    NSMutableDictionary *dictionary = [YY_JSON_OBJECT_KEYDICTS yyObjectForKey:YYObjectKey];
     if (!dictionary)
     {
-        dictionary          = [[NSMutableDictionary alloc] init];
+        dictionary = [[NSMutableDictionary alloc] init];
         if ([self YYSuper] && ![[self superclass] isMemberOfClass:[NSObject class]])
         {
             [dictionary setValuesForKeysWithDictionary:[[self superclass] YYJSONKeyDict]];
@@ -87,7 +130,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     if ([NSJSONSerialization isValidJSONObject:self])
     {
         NSError *error;
-        NSData  *jsonData = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:&error];
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:&error];
         if (!error)
         {
             return jsonData;
@@ -102,10 +145,10 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 */
 - (NSDictionary *)YYJSONDictionary
 {
-    NSDictionary        *keyDict  = [self.class YYJSONKeyDict];
+    NSDictionary *keyDict = [self.class YYJSONKeyDict];
     NSMutableDictionary *jsonDict = [[NSMutableDictionary alloc] initWithCapacity:keyDict.count];
     [keyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        id value         = nil;
+        id value = nil;
         id originalValue = [self valueForKey:key];
         if (NSClassFromString(obj))
         {
@@ -124,10 +167,32 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
         }
         if (value)
         {
+            //如果属性中有NSDate类型，不做这个转换，无法转成功json
+            if ([value isKindOfClass:[NSDate class]])
+            {
+                NSDate *date = (NSDate *) value;
+                value = [[self.class getUTCFormatter] stringFromDate:date];
+            }
+
             [jsonDict setValue:value forKey:key];
         }
     }];
     return jsonDict;
+}
+
++(NSDateFormatter *)getUTCFormatter
+{
+    static NSDateFormatter *formatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [[NSDateFormatter alloc] init];
+        NSLocale *local = [[NSLocale alloc] initWithLocaleIdentifier:@"en"];
+        [formatter setLocale:local];
+        formatter.dateFormat = @"EEE',' dd MMM yyyy HH':'mm':'ss z";
+        NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+        [formatter setTimeZone:gmt];
+    });
+    return formatter;
 }
 
 static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
@@ -158,20 +223,38 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 #endif
 }
 
+- (NSArray *)toModels:(Class)modelClass
+{
+    return nil;
+}
 
+- (NSArray *)toModels:(Class)modelClass forKey:(NSString *)key
+{
+    return nil;
+}
+
+- (id)toModel:(Class)modelClass
+{
+    return nil;
+}
+
+- (id)toModel:(Class)modelClass forKey:(NSString *)key
+{
+    return nil;
+}
 @end
 
 @implementation NSObject (YYProperties)
 - (NSArray *)yyPropertiesOfClass:(Class)aClass
 {
-    NSMutableArray  *propertyNames = [[NSMutableArray alloc] init];
-    id              obj            = objc_getClass([NSStringFromClass(aClass) cStringUsingEncoding:4]);
-    unsigned int    outCount, i;
-    objc_property_t *properties    = class_copyPropertyList(obj, &outCount);
+    NSMutableArray *propertyNames = [[NSMutableArray alloc] init];
+    id obj = objc_getClass([NSStringFromClass(aClass) cStringUsingEncoding:4]);
+    unsigned int outCount, i;
+    objc_property_t *properties = class_copyPropertyList(obj, &outCount);
     for (i = 0; i < outCount; i++)
     {
-        objc_property_t property      = properties[i];
-        NSString        *propertyName = [NSString stringWithCString:property_getName(property) encoding:4];
+        objc_property_t property = properties[i];
+        NSString *propertyName = [NSString stringWithCString:property_getName(property) encoding:4];
         [propertyNames addObject:propertyName];
     }
     free(properties);
@@ -183,13 +266,13 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
     NSString *typeName = [self typeOfPropertyNamed:propertyName];
     if ([typeName isKindOfClass:[NSString class]])
     {
-        typeName      = [typeName stringByReplacingOccurrencesOfString:@"T@" withString:@""];
-        typeName      = [typeName stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        typeName = [typeName stringByReplacingOccurrencesOfString:@"T@" withString:@""];
+        typeName = [typeName stringByReplacingOccurrencesOfString:@"\"" withString:@""];
         NSRange range = [typeName rangeOfString:@"Array"];
         if (range.location != NSNotFound)
         {
             NSRange beginRange = [typeName rangeOfString:@"<"];
-            NSRange endRange   = [typeName rangeOfString:@">"];
+            NSRange endRange = [typeName rangeOfString:@">"];
             if (beginRange.location != NSNotFound && endRange.location != NSNotFound)
             {
                 NSString *protocalName = [typeName substringWithRange:NSMakeRange(beginRange.location + beginRange.length, endRange.location - beginRange.location - 1)];
@@ -200,7 +283,7 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
             }
         }
     }
-    NSObject *obj      = [NSClassFromString(typeName) new];
+    NSObject *obj = [NSClassFromString(typeName) new];
     if ([obj conformsToProtocol:protocol])
     {
         return typeName;
@@ -211,7 +294,7 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 + (NSString *)typeOfPropertyNamed:(NSString *)name
 {
     objc_property_t property = class_getProperty(self, [name UTF8String]);
-    if (property == NULL )
+    if (property == NULL)
     {
         return (NULL);
     }
@@ -220,16 +303,16 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 
 const char *property_getTypeString(objc_property_t property) {
     const char *attrs = property_getAttributes(property);
-    if (attrs == NULL )
+    if (attrs == NULL)
         return (NULL);
 
     static char buffer[256];
-    const char  *e    = strchr(attrs, ',');
-    if (e == NULL )
+    const char *e = strchr(attrs, ',');
+    if (e == NULL)
         return (NULL);
 
     int len = (int) (e - attrs);
-    memcpy( buffer, attrs, len );
+    memcpy(buffer, attrs, len);
     buffer[len] = '\0';
 
     return (buffer);
@@ -290,6 +373,64 @@ const char *property_getTypeString(objc_property_t property) {
 
 @implementation NSData (YYJSONHelper)
 
++ (id)objectsForModelClass:(Class)modelClass fromArray:(NSArray *)array
+{
+    NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:array.count];
+    NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
+    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [models addObject:[self objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict]];
+    }];
+    return models;
+}
+
++ (id)objectForModelClass:(Class)modelClass fromDict:(NSDictionary *)dict withJSONKeyDict:(NSDictionary *)YYJSONKeyDict
+{
+    id model = [[modelClass alloc] init];
+    [YYJSONKeyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        if ([dict[key] isKindOfClass:[NSArray class]])
+        {
+            if (NSClassFromString(obj))
+            {
+                NSArray *array = [self objectsForModelClass:NSClassFromString(obj) fromArray:dict[key]];
+                if (array.count)
+                {
+                    [model setValue:array forKey:key];
+                }
+            }
+            else
+            {
+                [model setValue:dict[key] forKey:obj];
+            }
+        }
+        else if ([dict[key] isKindOfClass:[NSDictionary class]])
+        {
+            Class otherClass = NSClassFromString(obj);
+            if (otherClass)
+            {
+                id object = [self objectForModelClass:otherClass fromDict:dict[key] withJSONKeyDict:[otherClass YYJSONKeyDict]];
+                if (object)
+                {
+                    [model setValue:object forKey:key];
+                }
+            }
+            else
+            {
+                [model setValue:dict[key] forKey:obj];
+            }
+        }
+        else
+        {
+            id value = dict[key];
+            if (![value isKindOfClass:[NSNull class]] && value != nil)
+            {
+                [model setValue:dict[key] forKey:obj];
+            }
+        }
+    }];
+    return model;
+}
+
+
 - (id)toModel:(Class)modelClass
 {
     return [self toModel:modelClass forKey:nil];
@@ -299,9 +440,9 @@ const char *property_getTypeString(objc_property_t property) {
 {
     if (modelClass == nil)return nil;
     id YYJSONObject = [self YYJSONObjectForKey:key];
-    if (YYJSONObject == nil)return nil;
+    if (YYJSONObject == nil || [NSNull null] == YYJSONObject)return nil;
     NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
-    id           model          = [self objectForModelClass:modelClass fromDict:YYJSONObject withJSONKeyDict:YYJSONKeyDict];
+    id model = [NSData objectForModelClass:modelClass fromDict:YYJSONObject withJSONKeyDict:YYJSONKeyDict];
     return model;
 }
 
@@ -314,28 +455,32 @@ const char *property_getTypeString(objc_property_t property) {
 {
     if (modelClass == nil)return nil;
     id YYJSONObject = [self YYJSONObjectForKey:key];
-    if (YYJSONObject == nil)return nil;
+    if (YYJSONObject == nil || [NSNull null] == YYJSONObject)return nil;
     NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
     if ([YYJSONObject isKindOfClass:[NSArray class]])
     {
         NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:[YYJSONObject count]];
         [YYJSONObject enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            id model = [self objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
+            id model = [NSData objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
             [models addObject:model];
         }];
         return models;
     }
     else if ([YYJSONObject isKindOfClass:[NSDictionary class]])
     {
-        return [self objectForModelClass:modelClass fromDict:YYJSONObject withJSONKeyDict:YYJSONKeyDict];
+        id model = [NSData objectForModelClass:modelClass fromDict:YYJSONObject withJSONKeyDict:YYJSONKeyDict];
+        if (model)
+        {
+            return @[model];
+        }
     }
     return nil;
 }
 
 - (id)objectsForModelClass:(Class)modelClass fromArray:(NSArray *)array
 {
-    NSMutableArray *models        = [[NSMutableArray alloc] initWithCapacity:array.count];
-    NSDictionary   *YYJSONKeyDict = [modelClass YYJSONKeyDict];
+    NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:array.count];
+    NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
     [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [models addObject:[self objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict]];
     }];
@@ -351,7 +496,10 @@ const char *property_getTypeString(objc_property_t property) {
             if (NSClassFromString(obj))
             {
                 NSArray *array = [self objectsForModelClass:NSClassFromString(obj) fromArray:dict[key]];
-                [model setValue:array forKey:key];
+                if (array.count)
+                {
+                    [model setValue:array forKey:key];
+                }
             }
             else
             {
@@ -362,8 +510,18 @@ const char *property_getTypeString(objc_property_t property) {
         {
 
             Class otherClass = NSClassFromString(obj);
-            id    object     = [self objectForModelClass:otherClass fromDict:dict[key] withJSONKeyDict:[otherClass YYJSONKeyDict]];
-            [model setValue:object forKey:key];
+            if (otherClass)
+            {
+                id object = [self objectForModelClass:otherClass fromDict:dict[key] withJSONKeyDict:[otherClass YYJSONKeyDict]];
+                if (object)
+                {
+                    [model setValue:object forKey:key];
+                }
+            }
+            else
+            {
+                [model setValue:dict[key] forKey:obj];
+            }
         }
         else
         {
@@ -385,7 +543,7 @@ const char *property_getTypeString(objc_property_t property) {
 
 - (id)YYJSONObject
 {
-    return [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingAllowFragments error:nil];
+    return [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
 }
 
 - (id)YYJSONObjectForKey:(NSString *)key
@@ -397,6 +555,65 @@ const char *property_getTypeString(objc_property_t property) {
     else
     {
         return [self YYJSONObject];
+    }
+}
+
+- (id)valueForJsonKey:(NSString *)key
+{
+    id rootJsonObj = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+    if ([rootJsonObj isKindOfClass:[NSDictionary class]])
+    {
+        NSDictionary *dict = (NSDictionary *) rootJsonObj;
+        return [dict valueForKey:key];
+    }
+    return nil;
+}
+
+- (NSDictionary *)dictForJsonKeys:(NSArray *)keys
+{
+    id rootJsonObj = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+    if ([rootJsonObj isKindOfClass:[NSDictionary class]])
+    {
+        NSDictionary *dict = (NSDictionary *) rootJsonObj;
+        NSMutableDictionary *jsonDict = [NSMutableDictionary dictionary];
+        [keys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
+            NSString *jsonValue = [dict valueForKey:key];
+            if (jsonValue)
+            {
+                [jsonDict setObject:jsonValue forKey:key];
+            }
+        }];
+        return jsonDict;
+    }
+    return nil;
+}
+
+- (void)parseToObjectWithParsers:(NSArray *)parsers
+{
+    NSDictionary *rootJsonObj = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+    if ([rootJsonObj isKindOfClass:[NSDictionary class]])
+    {
+        [parsers enumerateObjectsUsingBlock:^(YYJSONParser *parser, NSUInteger idx, BOOL *stop) {
+            id obj = [rootJsonObj objectForKey:parser.key];
+            id result = nil;
+            //如果没有clazz，则说明不是Model，直接原样返回
+            if (parser.clazz)
+            {
+                if (parser.single)
+                {
+                    result = [obj toModel:parser.clazz];
+                }
+                else
+                {
+                    result = [obj toModels:parser.clazz];
+                }
+            }
+            else
+            {
+                result = obj;
+            }
+            parser.result = result;
+        }];
     }
 }
 
@@ -422,7 +639,7 @@ const char *property_getTypeString(objc_property_t property) {
     if ([NSJSONSerialization isValidJSONObject:jsonDictionaries])
     {
         NSError *error;
-        NSData  *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionaries options:NSJSONWritingPrettyPrinted error:&error];
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionaries options:NSJSONWritingPrettyPrinted error:&error];
         if (!error)
         {
             return jsonData;
@@ -431,4 +648,18 @@ const char *property_getTypeString(objc_property_t property) {
     return nil;
 }
 
+- (NSArray *)toModels:(Class)modelClass
+{
+    if ([self isKindOfClass:[NSArray class]] && self.count > 0)
+    {
+        NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
+        NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:[self count]];
+        [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            id model = [NSData objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
+            [models addObject:model];
+        }];
+        return models;
+    }
+    return nil;
+}
 @end
