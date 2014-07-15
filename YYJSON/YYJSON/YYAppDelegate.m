@@ -23,8 +23,8 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
 
-    NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"]];
-    AudioModel *audioModel = [data toModel:[AudioModel class]];
+//    NSData *data = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test" ofType:@"json"]];
+//    AudioModel *audioModel = [data toModel:[AudioModel class]];
 
     NSData *data1 = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test1" ofType:@"json"]];
     Test1 *test1 = [data1 toModel:[Test1 class]];

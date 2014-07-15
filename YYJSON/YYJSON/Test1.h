@@ -32,4 +32,6 @@
 @interface Test1 : NSObject
 @property (assign,nonatomic)int code;
 @property (strong,nonatomic)Data *data;
+@property (copy,nonatomic)NSString *country;
+@property (strong,nonatomic)Data *subdata;
 @end

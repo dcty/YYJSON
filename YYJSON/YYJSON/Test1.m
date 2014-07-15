@@ -7,9 +7,15 @@
 //
 
 #import "Test1.h"
-
+#import "YYJSONHelper.h"
 @implementation Test1
 
++ (void)initialize
+{
+    [super initialize];
+    [self bindYYJSONKey:@"data.country" toProperty:@"country"];
+    [self bindYYJSONKey:@"data.subdata" toProperty:@"subdata.Data"];
+}
 @end
 
 @implementation Data

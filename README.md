@@ -2,7 +2,54 @@ YYJSON
 ======
 
 将JSON数据直接转成NSObject  
-支持 NSString，NSNumber，int，float，BOOL，NSArray，OtherModel。  
+支持 NSString，NSNumber，int，float，BOOL，NSArray，OtherModel。 
+
+	2014-07-15 10:44:07 update
+
+	从dict取值改为valueForkeyPath，支持用路径来取值了
+
+	@interface Test1 : NSObject
+	@property (assign,nonatomic)int code;
+	@property (strong,nonatomic)Data *data;
+	@property (copy,nonatomic)NSString *country;
+	@property (strong,nonatomic)Data *subdata;
+	@end
+	@implementation Test1
+
+	+ (void)initialize
+	{
+    	[super initialize];
+	    [self bindYYJSONKey:@"data.country" toProperty:@"country"];
+	    //country不是自定义的NSObject所以不需要特殊处理
+    	[self bindYYJSONKey:@"data.subdata" toProperty:@"subdata.Data"]; 
+    	//对应的是subdata property设置为 subdata.ClassName就可了 一般情况这种蛋疼的写法很少吧，不过还是做一下支持。
+	}
+	@end
+	
+	json 数据如下
+	{
+    "code": 0,
+    "data": {
+        "subdata": {
+            "country": "米国"
+        },
+        "country": "中国",
+        "country_id": "CN",
+        "area": "华东",
+        "area_id": "300000",
+        "region": "安徽省",
+        "region_id": "340000",
+        "city": "合肥市",
+        "city_id": "340100",
+        "county": "",
+        "county_id": "-1",
+        "isp": "电信",
+        "isp_id": "100017",
+        "ip": "218.22.9.4"
+    }
+
+
+ 
 
 	update：2013-07-17
 	新增 
