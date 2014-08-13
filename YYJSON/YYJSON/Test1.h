@@ -34,4 +34,5 @@
 @property (strong,nonatomic)Data *data;
 @property (copy,nonatomic)NSString *country;
 @property (strong,nonatomic)Data *subdata;
+@property (copy,nonatomic)NSString *miguo;
 @end

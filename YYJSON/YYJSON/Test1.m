@@ -15,6 +15,7 @@
     [super initialize];
     [self bindYYJSONKey:@"data.country" toProperty:@"country"];
     [self bindYYJSONKey:@"data.subdata" toProperty:@"subdata.Data"];
+    [self bindYYJSONKey:@"data.subdata.country" toProperty:@"miguo"];
 }
 @end
 

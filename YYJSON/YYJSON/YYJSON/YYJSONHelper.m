@@ -406,6 +406,18 @@ const char *property_getTypeString(objc_property_t property) {
 
 + (id)objectForModelClass:(Class)modelClass fromDict:(NSDictionary *)dict withJSONKeyDict:(NSDictionary *)YYJSONKeyDict
 {
+    if (![dict isKindOfClass:[NSDictionary class]])
+    {
+        return nil;
+    }
+    if (![YYJSONKeyDict isKindOfClass:[NSDictionary class]])
+    {
+        return nil;
+    }
+    if (!modelClass)
+    {
+        return nil;
+    }
     id model = [[modelClass alloc] init];
     [YYJSONKeyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if ([[dict valueForKeyPath:key] isKindOfClass:[NSArray class]])
