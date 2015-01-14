@@ -348,29 +348,6 @@ const char *property_getTypeString(objc_property_t property) {
 
 @end
 
-@implementation NSDictionary (YYJSONHelper)
-- (NSString *)YYJSONString
-{
-    NSData *jsonData = self.YYJSONData;
-    if (jsonData)
-    {
-        return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    }
-    return nil;
-}
-
-- (id)yyObjectForKey:(id)key
-{
-    if (key)
-    {
-        return [self objectForKey:key];
-    }
-    return nil;
-}
-
-
-@end
-
 @implementation NSData (YYJSONHelper)
 
 + (Class)classForString:(NSString *)string valueKey:(NSString **)key
@@ -655,4 +632,32 @@ const char *property_getTypeString(objc_property_t property) {
     }
     return nil;
 }
+@end
+
+@implementation NSDictionary (YYJSONHelper)
+- (NSString *)YYJSONString
+{
+    NSData *jsonData = self.YYJSONData;
+    if (jsonData)
+    {
+        return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    return nil;
+}
+
+- (id)yyObjectForKey:(id)key
+{
+    if (key)
+    {
+        return [self objectForKey:key];
+    }
+    return nil;
+}
+-(id)toModel:(Class)modelClass
+{
+    NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
+    id model = [NSData objectForModelClass:modelClass fromDict:self withJSONKeyDict:YYJSONKeyDict];
+    return model;
+}
+
 @end
