@@ -64,6 +64,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 
 #endif
 
+
 + (BOOL)YYSuper
 {
     return NO;
@@ -101,14 +102,14 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
             NSString *typeName = [self propertyConformsToProtocol:@protocol(YYJSONHelperProtocol) propertyName:obj];
             if (typeName)
             {
-                [dictionary setObject:typeName forKey:obj];
+                dictionary[obj] = typeName;
             }
             else
             {
-                [dictionary setObject:obj forKey:obj];
+                dictionary[obj] = obj;
             }
         }];
-        [YY_JSON_OBJECT_KEYDICTS setObject:dictionary forKey:YYObjectKey];
+        YY_JSON_OBJECT_KEYDICTS[YYObjectKey] = dictionary;
     }
     return dictionary;
 }
@@ -117,7 +118,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 {
     NSMutableDictionary *dictionary = [self _YYJSONKeyDict];
     [dictionary removeObjectForKey:property];
-    [dictionary setObject:property forKey:jsonKey];
+    dictionary[jsonKey] = property;
 }
 
 - (NSString *)YYJSONString
@@ -180,7 +181,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     return jsonDict;
 }
 
-+(NSDateFormatter *)getUTCFormatter
++ (NSDateFormatter *)getUTCFormatter
 {
     static NSDateFormatter *formatter;
     static dispatch_once_t onceToken;
@@ -242,6 +243,66 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
 {
     return nil;
 }
+
++ (id)objectWithDataOrString:(id)object forKey:(NSString *)key
+{
+    if ([object isKindOfClass:[NSData class]])
+    {
+        NSData *data = (NSData *) object;
+        return [data toModel:self.class forKey:key];
+    }
+    else if ([object isKindOfClass:[NSString class]])
+    {
+        NSString *string = (NSString *) object;
+        return [string toModel:self.class forKey:key];
+    }
+    return nil;
+}
+
++ (NSArray *)objectsWithDataOrString:(id)object forKey:(NSString *)key
+{
+    if ([object isKindOfClass:[NSData class]])
+    {
+        NSData *data = (NSData *) object;
+        return [data toModels:self.class forKey:key];
+    }
+    else if ([object isKindOfClass:[NSString class]])
+    {
+        NSString *string = (NSString *) object;
+        return [string toModels:self.class forKey:key];
+    }
+    return nil;
+}
+
++ (YYModel)YYModel
+{
+    return ^id(id data) {
+        return self.YYModelForKey(nil, data);
+    };
+}
+
++ (YYModelForKey)YYModelForKey
+{
+    return ^id(NSString *key, id data) {
+        return [self objectWithDataOrString:data forKey:key];
+    };
+}
+
++ (YYModels)YYModels
+{
+    return ^id(id data) {
+        return self.YYModelsForKey(nil, data);
+    };
+}
+
++ (YYModelsForKey)YYModelsForKey
+{
+    return ^id(NSString *key, id data) {
+        return [self objectsWithDataOrString:data forKey:key];
+    };
+}
+
+
 @end
 
 @implementation NSObject (YYProperties)
@@ -352,12 +413,12 @@ const char *property_getTypeString(objc_property_t property) {
 
 + (Class)classForString:(NSString *)string valueKey:(NSString **)key
 {
-    if (string.length>0)
+    if (string.length > 0)
     {
-        if ([string rangeOfString:@"."].length>0)
+        if ([string rangeOfString:@"."].length > 0)
         {
             NSArray *strings = [string componentsSeparatedByString:@"."];
-            if (strings.count>1)
+            if (strings.count > 1)
             {
                 *key = strings.firstObject;
                 return NSClassFromString(strings.lastObject);
@@ -504,9 +565,17 @@ const char *property_getTypeString(objc_property_t property) {
 }
 
 
+static char *YYJSONOBJECTKEY;
+
 - (id)YYJSONObject
 {
-    return [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+    id jsonObject = objc_getAssociatedObject(self, YYJSONOBJECTKEY);
+    if (!jsonObject)
+    {
+        jsonObject = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+        objc_setAssociatedObject(self, YYJSONOBJECTKEY, jsonObject, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return jsonObject;
 }
 
 - (id)YYJSONObjectForKey:(NSString *)key
@@ -523,7 +592,7 @@ const char *property_getTypeString(objc_property_t property) {
 
 - (id)valueForJsonKey:(NSString *)key
 {
-    id rootJsonObj = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+    id rootJsonObj = self.YYJSONObject;
     if ([rootJsonObj isKindOfClass:[NSDictionary class]])
     {
         NSDictionary *dict = (NSDictionary *) rootJsonObj;
@@ -534,7 +603,7 @@ const char *property_getTypeString(objc_property_t property) {
 
 - (NSDictionary *)dictForJsonKeys:(NSArray *)keys
 {
-    id rootJsonObj = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+    id rootJsonObj = self.YYJSONObject;
     if ([rootJsonObj isKindOfClass:[NSDictionary class]])
     {
         NSDictionary *dict = (NSDictionary *) rootJsonObj;
@@ -543,7 +612,7 @@ const char *property_getTypeString(objc_property_t property) {
             NSString *jsonValue = [dict valueForKey:key];
             if (jsonValue)
             {
-                [jsonDict setObject:jsonValue forKey:key];
+                jsonDict[key] = jsonValue;
             }
         }];
         return jsonDict;
@@ -553,11 +622,11 @@ const char *property_getTypeString(objc_property_t property) {
 
 - (void)parseToObjectWithParsers:(NSArray *)parsers
 {
-    NSDictionary *rootJsonObj = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+    NSDictionary *rootJsonObj = self.YYJSONObject;
     if ([rootJsonObj isKindOfClass:[NSDictionary class]])
     {
         [parsers enumerateObjectsUsingBlock:^(YYJSONParser *parser, NSUInteger idx, BOOL *stop) {
-            id obj = [rootJsonObj objectForKey:parser.key];
+            id obj = rootJsonObj[parser.key];
             id result = nil;
             //如果没有clazz，则说明不是Model，直接原样返回
             if (parser.clazz)
@@ -570,7 +639,7 @@ const char *property_getTypeString(objc_property_t property) {
                 {
                     if ([obj isKindOfClass:[NSDictionary class]])
                     {
-                        result = [[(NSDictionary *)obj YYJSONString] toModel:parser.clazz];
+                        result = [[(NSDictionary *) obj YYJSONString] toModel:parser.clazz];
                     }
                     else
                     {
@@ -649,15 +718,17 @@ const char *property_getTypeString(objc_property_t property) {
 {
     if (key)
     {
-        return [self objectForKey:key];
+        return self[key];
     }
     return nil;
 }
--(id)toModel:(Class)modelClass
+
+- (id)toModel:(Class)modelClass
 {
     NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
     id model = [NSData objectForModelClass:modelClass fromDict:self withJSONKeyDict:YYJSONKeyDict];
     return model;
 }
+
 
 @end
