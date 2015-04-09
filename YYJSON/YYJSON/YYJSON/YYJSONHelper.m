@@ -87,7 +87,8 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     if (!dictionary)
     {
         dictionary = [[NSMutableDictionary alloc] init];
-        if ([self YYSuper] && ![[self superclass] isMemberOfClass:[NSObject class]])
+        Class superClass = [self superclass];
+        if ([self YYSuper] && superClass && ![NSStringFromClass(superClass) isEqualToString:@"NSObject"])
         {
             [dictionary setValuesForKeysWithDictionary:[[self superclass] YYJSONKeyDict]];
         }
