@@ -4,6 +4,7 @@
 //
 
 #import "objc/runtime.h"
+#import <Foundation/Foundation.h>
 
 typedef id(^YYModel)(id data);
 
