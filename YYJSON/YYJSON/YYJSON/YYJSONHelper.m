@@ -151,7 +151,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     NSMutableDictionary *jsonDict = [[NSMutableDictionary alloc] initWithCapacity:keyDict.count];
     [keyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         id value = nil;
-        id originalValue = [self valueForKey:key];
+        id originalValue = [self valueForKey:obj];
         if (NSClassFromString(obj))
         {
             if ([originalValue isKindOfClass:[NSArray class]])
