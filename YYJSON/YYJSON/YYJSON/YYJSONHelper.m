@@ -438,7 +438,19 @@ const char *property_getTypeString(objc_property_t property) {
     NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:array.count];
     NSDictionary *YYJSONKeyDict = [modelClass YYJSONKeyDict];
     [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [models addObject:[self objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict]];
+        id object = nil;
+        if ([obj isKindOfClass:[NSArray class]])
+        {
+            object = [self objectsForModelClass:modelClass fromArray:obj];
+        }
+        else
+        {
+            object  = [self objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
+        }
+        if (object)
+        {
+            [models addObject:object];
+        }
     }];
     return models;
 }
