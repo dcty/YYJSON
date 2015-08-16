@@ -556,7 +556,10 @@ const char *property_getTypeString(objc_property_t property) {
         NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:[YYJSONObject count]];
         [YYJSONObject enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             id model = [NSData objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
-            [models addObject:model];
+            if (model)
+            {
+                [models addObject:model];
+            }
         }];
         return models;
     }
@@ -708,7 +711,9 @@ static char *YYJSONOBJECTKEY;
         NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:[self count]];
         [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             id model = [NSData objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
-            [models addObject:model];
+            if (model) {
+                [models addObject:model];
+            }
         }];
         return models;
     }
