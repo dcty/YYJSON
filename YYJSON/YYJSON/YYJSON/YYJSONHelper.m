@@ -133,10 +133,15 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     {
         NSError *error;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:&error];
+        NSAssert(error, error.localizedDescription);
         if (!error)
         {
             return jsonData;
         }
+    }
+    else
+    {
+        NSAssert(YES, @"转换失败");
     }
     return self.YYJSONDictionary.YYJSONData;
 }
@@ -588,7 +593,9 @@ static char *YYJSONOBJECTKEY;
     id jsonObject = objc_getAssociatedObject(self, YYJSONOBJECTKEY);
     if (!jsonObject)
     {
-        jsonObject = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:nil];
+        NSError *error = nil;
+        jsonObject = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:&error];
+        NSAssert(error, error.localizedDescription);
         objc_setAssociatedObject(self, YYJSONOBJECTKEY, jsonObject, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return jsonObject;
@@ -695,11 +702,13 @@ static char *YYJSONOBJECTKEY;
     {
         NSError *error;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionaries options:NSJSONWritingPrettyPrinted error:&error];
+        NSAssert(error, error.localizedDescription);
         if (!error)
         {
             return jsonData;
         }
     }
+    NSAssert(YES, @"转换失败");
     return nil;
 }
 
