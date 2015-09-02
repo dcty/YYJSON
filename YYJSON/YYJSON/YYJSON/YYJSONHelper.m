@@ -3,6 +3,13 @@
 //
 //
 
+#if TARGET_IPHONE_SIMULATOR
+#define YYJSONAssert(condition, desc) NSAssert(condition,desc)
+#elif TARGET_OS_IPHONE
+#define YYJSONAssert(condition, desc)
+#endif
+
+
 
 #import "YYJSONHelper.h"
 
@@ -133,7 +140,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     {
         NSError *error;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:&error];
-        NSAssert(error, error.localizedDescription);
+        YYJSONAssert(!error, error.localizedDescription);
         if (!error)
         {
             return jsonData;
@@ -141,7 +148,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     }
     else
     {
-        NSAssert(YES, @"转换失败");
+        YYJSONAssert(YES, @"转换失败");
     }
     return self.YYJSONDictionary.YYJSONData;
 }
@@ -595,7 +602,7 @@ static char *YYJSONOBJECTKEY;
     {
         NSError *error = nil;
         jsonObject = [NSJSONSerialization JSONObjectWithData:self options:NSJSONReadingMutableContainers error:&error];
-        NSAssert(error, error.localizedDescription);
+        YYJSONAssert(!error, error.localizedDescription);
         objc_setAssociatedObject(self, YYJSONOBJECTKEY, jsonObject, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return jsonObject;
@@ -702,13 +709,13 @@ static char *YYJSONOBJECTKEY;
     {
         NSError *error;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionaries options:NSJSONWritingPrettyPrinted error:&error];
-        NSAssert(error, error.localizedDescription);
+        YYJSONAssert(error, error.localizedDescription);
         if (!error)
         {
             return jsonData;
         }
     }
-    NSAssert(YES, @"转换失败");
+    YYJSONAssert(YES, @"转换失败");
     return nil;
 }
 
