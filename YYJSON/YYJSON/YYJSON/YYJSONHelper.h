@@ -4,6 +4,16 @@
 //
 
 #import "objc/runtime.h"
+#import <Foundation/Foundation.h>
+
+typedef id(^YYModel)(id data);
+
+typedef id(^YYModelForKey)(NSString *key, id data);
+
+typedef id(^YYModels)(id data);
+
+typedef id(^YYModelsForKey)(NSString *key, id data);
+
 
 @protocol YYJSONHelperProtocol
 
@@ -68,6 +78,19 @@
 - (id)toModel:(Class)modelClass;
 
 - (id)toModel:(Class)modelClass forKey:(NSString *)key;
+
++ (id)objectWithDataOrString:(id)object forKey:(NSString *)key;
+
++ (NSArray *)objectsWithDataOrString:(id)object forKey:(NSString *)key;
+
++ (YYModel)YYModel;
+
++ (YYModelForKey)YYModelForKey;
+
++ (YYModels)YYModels;
+
++ (YYModelsForKey)YYModelsForKey;
+
 @end
 
 @interface NSObject (YYProperties)

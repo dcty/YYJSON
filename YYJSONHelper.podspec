@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'YYJSONHelper'
-  s.version      = '1.0'
+  s.version      = '1.0.2'
   s.summary      = '将JSON数据直接转成NSObject,将NSObject转为JSONString或JSONData'
   s.homepage     = 'https://github.com/dcty/YYJSON'
   s.license      = 'MIT'
