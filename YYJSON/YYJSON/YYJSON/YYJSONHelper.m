@@ -148,7 +148,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
     }
     else
     {
-        YYJSONAssert(YES, @"转换失败");
+        YYJSONAssert(NO, @"转换失败");
     }
     return self.YYJSONDictionary.YYJSONData;
 }
@@ -709,13 +709,13 @@ static char *YYJSONOBJECTKEY;
     {
         NSError *error;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonDictionaries options:NSJSONWritingPrettyPrinted error:&error];
-        YYJSONAssert(error, error.localizedDescription);
+        YYJSONAssert(!error, error.localizedDescription);
         if (!error)
         {
             return jsonData;
         }
     }
-    YYJSONAssert(YES, @"转换失败");
+    YYJSONAssert(NO, @"转换失败");
     return nil;
 }
 
