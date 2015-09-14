@@ -612,6 +612,9 @@ static char *YYJSONOBJECTKEY;
 {
     if (key && [[self YYJSONObject] isKindOfClass:[NSDictionary class]])
     {
+        if ([key rangeOfString:@"."].location != NSNotFound){
+            return [[self YYJSONObject] valueForKeyPath:key];
+        }
         return [[self YYJSONObject] objectForKey:key];
     }
     else
