@@ -101,8 +101,7 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
         }
         //因为我们的Model可能已经继承了自己写的BaseModel，如果再让你继承我自己写的一个BaseJsonModel，那么可能会破坏你的设计。
         //由于我不喜欢继承，所以无法重写  valueForUndefinedKey: 和 setValue:forUndefinedKey:
-        //所以把有使用YYJsonHelper的类的以上俩方法替换了，如果你需要在这俩方法里面进行其他控制
-        //请重写新的两个方法 YY_valueForUndefinedKey:和YY_setValue:forUndefinedKey:
+        //这边使用了一个取巧的方法。 如果你没有重载这两个方法，我会帮你重载  并什么都不做.  如果你重载了,我就不进行替换了
         YY_swizzleInstanceMethod(self, @selector(valueForUndefinedKey:), @selector(YY_valueForUndefinedKey:));
         YY_swizzleInstanceMethod(self, @selector(setValue:forUndefinedKey:), @selector(YY_setValue:forUndefinedKey:));
         NSArray *properties = [self yyPropertiesOfClass:[self class]];
@@ -210,16 +209,11 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 }
 
 static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
-    Method a = class_getInstanceMethod(c, original);
+    
     Method b = class_getInstanceMethod(c, replacement);
-    if (class_addMethod(c, original, method_getImplementation(b), method_getTypeEncoding(b)))
-    {
-        class_replaceMethod(c, replacement, method_getImplementation(a), method_getTypeEncoding(a));
-    }
-    else
-    {
-        method_exchangeImplementations(a, b);
-    }
+    ///给 c 类重载original方法。 使用replacement的IMP
+    class_addMethod(c, original, method_getImplementation(b), method_getTypeEncoding(b));
+    ///不替换 a 的原始方法
 }
 
 - (id)YY_valueForUndefinedKey:(NSString *)key
@@ -329,7 +323,9 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement) {
     {
         objc_property_t property = properties[i];
         NSString *propertyName = [NSString stringWithCString:property_getName(property) encoding:4];
-        [propertyNames addObject:propertyName];
+        if (propertyName) {
+            [propertyNames addObject:propertyName];
+        }
     }
     free(properties);
     return propertyNames;
@@ -459,8 +455,7 @@ const char *property_getTypeString(objc_property_t property) {
         {
             object  = [self objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
         }
-        if (object)
-        {
+        if (object) {
             [models addObject:object];
         }
     }];
@@ -568,8 +563,7 @@ const char *property_getTypeString(objc_property_t property) {
         NSMutableArray *models = [[NSMutableArray alloc] initWithCapacity:[YYJSONObject count]];
         [YYJSONObject enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             id model = [NSData objectForModelClass:modelClass fromDict:obj withJSONKeyDict:YYJSONKeyDict];
-            if (model)
-            {
+            if (model) {
                 [models addObject:model];
             }
         }];
@@ -703,7 +697,10 @@ static char *YYJSONOBJECTKEY;
 {
     NSMutableArray *jsonDictionaries = [[NSMutableArray alloc] init];
     [self enumerateObjectsUsingBlock:^(NSObject *obj, NSUInteger idx, BOOL *stop) {
-        [jsonDictionaries addObject:obj.YYJSONDictionary];
+        id jsonObj = obj.YYJSONDictionary;
+        if (jsonObj) {
+            [jsonDictionaries addObject:jsonObj];
+        }
     }];
     if ([NSJSONSerialization isValidJSONObject:jsonDictionaries])
     {
