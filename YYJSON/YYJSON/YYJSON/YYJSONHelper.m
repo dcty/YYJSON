@@ -539,6 +539,7 @@ const char *property_getTypeString(objc_property_t property) {
 
 - (id)toModel:(Class)modelClass forKey:(NSString *)key
 {
+    if (self.length == 0) return nil;
     if (modelClass == nil)return nil;
     id YYJSONObject = [self YYJSONObjectForKey:key];
     if (YYJSONObject == nil || [NSNull null] == YYJSONObject)return nil;
@@ -554,6 +555,7 @@ const char *property_getTypeString(objc_property_t property) {
 
 - (NSArray *)toModels:(Class)modelClass forKey:(NSString *)key
 {
+    if (self.length == 0) return nil;
     if (modelClass == nil)return nil;
     id YYJSONObject = [self YYJSONObjectForKey:key];
     if (YYJSONObject == nil || [NSNull null] == YYJSONObject)return nil;
