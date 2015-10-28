@@ -12,17 +12,13 @@
 + (BOOL)ignoreNullValues;   // default return YES
 @end
 
-@interface YYJSONHelper : NSObject
-
-@end
-
 @interface NSObject (YYJSON)
 
-- (instancetype)toModel:(id)clazz;    //class or string
+- (id)toModel:(id)clazz;    //class or string
 
 - (NSArray *)toModels:(id)clazz;    //class or string
 
-- (instancetype)toModel:(id)clazz forKeyPath:(NSString *)keyPath;
+- (id)toModel:(id)clazz forKeyPath:(NSString *)keyPath;
 
 - (NSArray *)toModels:(id)clazz forKeyPath:(NSString *)keyPath;
 

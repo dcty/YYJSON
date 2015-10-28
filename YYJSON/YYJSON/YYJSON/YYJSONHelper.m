@@ -50,12 +50,8 @@ static NSMapTable *YYJSONMapTable = nil;
 + (void)load {
     YYJSONKeyDict = [[NSMutableDictionary alloc] init];
     YYJSONMapTable = [NSMapTable weakToStrongObjectsMapTable];
-    [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(testn) userInfo:nil repeats:YES];
 }
 
-+ (void)testn{
-    NSLog(@"YYJSONMapTable.keyEnumerator.allObjects = %@", YYJSONMapTable.objectEnumerator.allObjects);
-}
 
 + (NSSet *)YYPropertySetOfClass:(Class)class {
     NSString *className = NSStringFromClass(class);
@@ -114,6 +110,9 @@ static NSMapTable *YYJSONMapTable = nil;
 
 @end
 
+@interface YYJSONHelper : NSObject
+
+@end
 
 @implementation YYJSONHelper
 
