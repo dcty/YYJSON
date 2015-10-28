@@ -13,7 +13,7 @@
 
 @end
 
-@interface Data : NSObject<YYJSONHelperProtocol>
+@interface Data : NSObject<YYJSONHelper>
 @property (copy,nonatomic)NSString *country;
 @property (assign,nonatomic)int country_id;
 @property (copy,nonatomic)NSString *area;

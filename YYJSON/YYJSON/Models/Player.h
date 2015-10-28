@@ -5,7 +5,7 @@
 
 
 
-@interface Player : NSObject <YYJSONHelperProtocol>
+@interface Player : NSObject <YYJSONHelper>
 
 @property(nonatomic) int rebounds_count;
 @property(nonatomic) int likes_received_count;

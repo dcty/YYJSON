@@ -9,7 +9,7 @@
 
 @class Player;
 
-@interface Shot : NSObject <YYJSONHelperProtocol>
+@interface Shot : NSObject <YYJSONHelper>
 
 @property(nonatomic, copy) NSString *image_teaser_url;
 @property(nonatomic, copy) NSString *created_at;

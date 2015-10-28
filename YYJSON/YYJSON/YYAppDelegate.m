@@ -27,16 +27,16 @@
 //    AudioModel *audioModel = [data toModel:[AudioModel class]];
 
     NSData *data1 = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test1" ofType:@"json"]];
-    Test1 *test1 = [data1 toModel:[Test1 class]];
+    Test1 *test1 = [Test1 objectWithInput:data1];
+    NSLog(@"test1.YYJSONString = %@",test1.YYJSONString);
+//    YYJSONParser *dataParser = [YYJSONParser objectWithKey:@"data" clazz:[Data class]];
+//    [data1 parseToObjectWithParsers:@[dataParser]];
+//    Data *result = dataParser.result;
     
-    YYJSONParser *dataParser = [YYJSONParser objectWithKey:@"data" clazz:[Data class]];
-    [data1 parseToObjectWithParsers:@[dataParser]];
-    Data *result = dataParser.result;
     
-    
-    [self testData];
-    [self testString];
-    [self testParser];
+//    [self testData];
+//    [self testString];
+//    [self testParser];
     return YES;
 }
 
@@ -45,7 +45,7 @@
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSURL *url = [NSURL URLWithString:@"http://api.dribbble.com/shots/43424/rebounds"];
         NSData *data = [NSData dataWithContentsOfURL:url];
-        NSArray *array = [data toModels:[Shot class] forKey:@"shots"];
+        NSArray *array = [data toModels:[Shot class] forKeyPath:@"shots"];
         Shot *shot = array[0];
         Player *player = shot.player;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -59,7 +59,7 @@
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         NSURL *url = [NSURL URLWithString:@"http://api.dribbble.com/shots/43424/rebounds"];
         NSString *string = [NSString stringWithContentsOfURL:url encoding:4 error:nil];
-        NSArray *array = [string toModels:[Shot class] forKey:@"shots"];
+        NSArray *array = [string toModels:[Shot class] forKeyPath:@"shots"];
         Shot *shot = array[0];
         Player *player = shot.player;
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -75,12 +75,12 @@
         NSData *data = [NSData dataWithContentsOfURL:url];
         if (data)
         {
-            YYJSONParser *shotParser = [YYJSONParser objectWithKey:@"shots" clazz:[Shot class]];
-            [data parseToObjectWithParsers:@[shotParser]];
+//            YYJSONParser *shotParser = [YYJSONParser objectWithKey:@"shots" clazz:[Shot class]];
+//            [data parseToObjectWithParsers:@[shotParser]];
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSArray *shots = shotParser.result;
-                Shot *shot = shots[0];
-                ALERT([@"parser\n" stringByAppendingString:shot.YYJSONString]);
+//                NSArray *shots = shotParser.result;
+//                Shot *shot = shots[0];
+//                ALERT([@"parser\n" stringByAppendingString:shot.YYJSONString]);
             });
         }
     });

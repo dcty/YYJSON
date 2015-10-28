@@ -12,7 +12,7 @@
 @protocol AudioPartModel <NSObject>
 @end
 
-@interface AudioPartModel : NSObject <YYJSONHelperProtocol>
+@interface AudioPartModel : NSObject <YYJSONHelper>
 @property(copy, nonatomic) NSString *partID;
 @property(assign, nonatomic) float begin;
 @property(assign, nonatomic) float end;

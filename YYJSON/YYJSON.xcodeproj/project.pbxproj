@@ -13,10 +13,8 @@
 		2C3AC9D9196903F600D6FC34 /* test1.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C3AC9D8196903F600D6FC34 /* test1.json */; };
 		2C3AC9DC1969041700D6FC34 /* Test1.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C3AC9DB1969041700D6FC34 /* Test1.m */; };
 		2C840E161974C01A00AE4F91 /* test2.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C840E151974C01A00AE4F91 /* test2.json */; };
-		31821329F8B13BC4B4B2C57F /* YYJSONTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 318213587480596667C4A030 /* YYJSONTests.m */; };
 		3182134FC55340558539DB7D /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 3182154F80B3D1A4811E04C1 /* Player.m */; };
 		31821355128AEC074663DCF2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 318218768AF3398FBCADC726 /* Foundation.framework */; };
-		318213BE19E74CCFB6245FE7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31821DAB7590A6B5C5904010 /* UIKit.framework */; };
 		318213D86A07ADBFEACECDF4 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 318212D45D83E5C9ABDEE001 /* Default@2x.png */; };
 		31821483C72E1A1E73E7217E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 318212EBAE13DA96DFC9702E /* main.m */; };
 		31821551E1F15FDE7ED441BB /* YYJSONHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 31821AC9F8BC7F48BA41B6CD /* YYJSONHelper.m */; };
@@ -24,24 +22,11 @@
 		318215B5D7CEE80A61E42527 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31821EBA6B6511BDA97AA671 /* CoreGraphics.framework */; };
 		31821702319806134EDE3CC2 /* YYUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3182173BA1185D19DAAE086F /* YYUtils.m */; };
 		318218480569D95F157F9C4D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 318210C47FC9426EE660E848 /* Default-568h@2x.png */; };
-		318218A94CC1F6405B11A7EA /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31821AD005AC18161EED1DEA /* SenTestingKit.framework */; };
-		318218F59A84C587EC59D5B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 318218768AF3398FBCADC726 /* Foundation.framework */; };
 		318219BB3C956280F866776D /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 31821857339D90D68A6D20F4 /* Default.png */; };
 		318219C9E6398F4643C0BEC5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31821FF5FE1284A46630D6C5 /* InfoPlist.strings */; };
 		31821B924DBC3AF9CBFFD649 /* Shot.m in Sources */ = {isa = PBXBuildFile; fileRef = 31821A093297BBA173C74BB3 /* Shot.m */; };
 		31821C78B8BD1423F7774049 /* YYAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 318218DE5A4CCC0974D6D0EC /* YYAppDelegate.m */; };
-		31821D5C4DE45966286AC77A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 31821B0ABBD2791458380329 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		31821A27CCB12FD5E5C9F3D1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 318216C04EB53B0F9C429908 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 31821C1F8C8E4EDDEF00793C;
-			remoteInfo = YYJSON;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		2C225B5F181A519D003F338D /* test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = test.json; sourceTree = "<group>"; };
@@ -56,7 +41,6 @@
 		31821040E3AA057C30B4489F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		318210C47FC9426EE660E848 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		3182118291B744B898D5C3D3 /* YYJSON-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = "YYJSON-Info.plist"; sourceTree = "<group>"; };
-		318211B87BA5BE008AD29EA9 /* YYJSONTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YYJSONTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		318212D45D83E5C9ABDEE001 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		318212EBAE13DA96DFC9702E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		318213587480596667C4A030 /* YYJSONTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YYJSONTests.m; sourceTree = "<group>"; };
@@ -83,16 +67,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		318213C360738874D57A8808 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				318218A94CC1F6405B11A7EA /* SenTestingKit.framework in Frameworks */,
-				318213BE19E74CCFB6245FE7 /* UIKit.framework in Frameworks */,
-				318218F59A84C587EC59D5B8 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		318214652C09AAF642D3C79D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -150,7 +124,6 @@
 			isa = PBXGroup;
 			children = (
 				31821F4CA49ADDFD27A5F8C7 /* YYJSON.app */,
-				318211B87BA5BE008AD29EA9 /* YYJSONTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -215,25 +188,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		31821AAB5393DEF1AD51F21E /* YYJSONTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 31821411CD1ECBBEEAA5336F /* Build configuration list for PBXNativeTarget "YYJSONTests" */;
-			buildPhases = (
-				318214B3C5667DFCE67A93D6 /* Sources */,
-				318213C360738874D57A8808 /* Frameworks */,
-				3182163FC583571A12AD5B84 /* Resources */,
-				31821C37FDF64C01961AC4C6 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				31821ED96523709807A08570 /* PBXTargetDependency */,
-			);
-			name = YYJSONTests;
-			productName = YYJSONTests;
-			productReference = 318211B87BA5BE008AD29EA9 /* YYJSONTests.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 		31821C1F8C8E4EDDEF00793C /* YYJSON */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 318213EAB964AFC5908DCE56 /* Build configuration list for PBXNativeTarget "YYJSON" */;
@@ -272,20 +226,11 @@
 			projectRoot = "";
 			targets = (
 				31821C1F8C8E4EDDEF00793C /* YYJSON */,
-				31821AAB5393DEF1AD51F21E /* YYJSONTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3182163FC583571A12AD5B84 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				31821D5C4DE45966286AC77A /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		31821A555B14DD859AA58F6B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -302,31 +247,7 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		31821C37FDF64C01961AC4C6 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		318214B3C5667DFCE67A93D6 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				31821329F8B13BC4B4B2C57F /* YYJSONTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3182171676C017DB0F6D8DD1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -344,14 +265,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		31821ED96523709807A08570 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 31821C1F8C8E4EDDEF00793C /* YYJSON */;
-			targetProxy = 31821A27CCB12FD5E5C9F3D1 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		31821B0ABBD2791458380329 /* InfoPlist.strings */ = {
@@ -373,23 +286,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		3182100A4E1A4ED886054A38 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/YYJSON.app/YYJSON";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "YYJSON/YYJSON-Prefix.pch";
-				INFOPLIST_FILE = "YYJSONTests/YYJSONTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
 		318211725FD172BEA9032E75 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -444,23 +340,6 @@
 			};
 			name = Release;
 		};
-		31821B6A2217801D68B998D3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/YYJSON.app/YYJSON";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "YYJSON/YYJSON-Prefix.pch";
-				INFOPLIST_FILE = "YYJSONTests/YYJSONTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 		31821D7854AC07E52472A69B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -510,15 +389,6 @@
 			buildConfigurations = (
 				318219F572B18E310A7CEA34 /* Release */,
 				318216CC980FA2F7EA20DAB0 /* Debug */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		31821411CD1ECBBEEAA5336F /* Build configuration list for PBXNativeTarget "YYJSONTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				31821B6A2217801D68B998D3 /* Release */,
-				3182100A4E1A4ED886054A38 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

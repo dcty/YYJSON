@@ -13,7 +13,11 @@
 + (void)initialize
 {
     [super initialize];
-    [self bindYYJSONKey:@"website_url" toProperty:@"webSiteURLString"];
+//    [self bindYYJSONKey:@"website_url" toProperty:@"webSiteURLString"];
+}
+
++ (NSDictionary *)yyKeyMap{
+    return @{@"webSiteURLString":@"website_url"};
 }
 
 @end

@@ -1,140 +1,43 @@
 //
-// Created by ivan on 13-7-17.
-//
+// Created by Ivan Chua on 15/10/26.
+// Copyright (c) 2015 MeiYou. All rights reserved.
 //
 
-#import "objc/runtime.h"
 #import <Foundation/Foundation.h>
 
-typedef id(^YYModel)(id data);
+@protocol YYJSONHelper
+@optional
++ (NSDictionary *)yyKeyMap;
 
-typedef id(^YYModelForKey)(NSString *key, id data);
++ (BOOL)ignoreNullValues;   // default return YES
+@end
 
-typedef id(^YYModels)(id data);
-
-typedef id(^YYModelsForKey)(NSString *key, id data);
-
-
-@protocol YYJSONHelperProtocol
+@interface YYJSONHelper : NSObject
 
 @end
 
-@interface YYJSONParser : NSObject
-@property(strong, nonatomic) Class clazz;   //要转换成什么class
-@property(assign, nonatomic) BOOL single;   //是否单个
-@property(strong, nonatomic) NSString *key; //key
-@property(strong, nonatomic) id result;     //结果
-@property(readonly, nonatomic) id smartResult;
+@interface NSObject (YYJSON)
 
-- (instancetype)initWithKey:(NSString *)key clazz:(Class)clazz single:(BOOL)single;
+- (instancetype)toModel:(id)clazz;    //class or string
 
-+ (instancetype)objectWithKey:(NSString *)key clazz:(Class)clazz single:(BOOL)single;
+- (NSArray *)toModels:(id)clazz;    //class or string
 
-+ (instancetype)objectWithKey:(NSString *)key clazz:(Class)clazz;
+- (instancetype)toModel:(id)clazz forKeyPath:(NSString *)keyPath;
 
-@end
+- (NSArray *)toModels:(id)clazz forKeyPath:(NSString *)keyPath;
 
-@interface NSObject (YYJSONHelper)
++ (instancetype)objectWithInput:(id)input;
 
-/**
-*   如果model需要取父类的属性，那么需要自己实现这个方法，并且返回YES
-*/
-+ (BOOL)YYSuper;
++ (instancetype)objectWithInput:(id)input forKeyPath:(NSString *)keyPath;
 
-/**
-*   映射好的字典
-*   {jsonkey:property}
-*/
-+ (NSDictionary *)YYJSONKeyDict;
++ (NSArray *)objectsWithInput:(id)input;
 
-/**
-*   自己绑定jsonkey和property
-*   如果没有自己绑定，默认为 {jsonkey:property} 【jsonkey=property】
-*/
-+ (void)bindYYJSONKey:(NSString *)jsonKey toProperty:(NSString *)property;
++ (NSArray *)objectsWithInput:(id)input forKeyPath:(NSString *)keyPath;
 
-/**
-*   返回jsonString
-*/
 - (NSString *)YYJSONString;
 
-/**
-*   返回jsonData
-*/
-- (NSData *)YYJSONData;
+- (NSDictionary *)YYJSONDict;
 
-/**
-*   返回json字典，不支持NSArray
-*/
-- (NSDictionary *)YYJSONDictionary;
-
-/**
-*   防止服务端返回的数据不对 导致没找到此方法造成的闪退
-*/
-- (NSArray *)toModels:(Class)modelClass;
-
-- (NSArray *)toModels:(Class)modelClass forKey:(NSString *)key;
-
-- (id)toModel:(Class)modelClass;
-
-- (id)toModel:(Class)modelClass forKey:(NSString *)key;
-
-+ (id)objectWithDataOrString:(id)object forKey:(NSString *)key;
-
-+ (NSArray *)objectsWithDataOrString:(id)object forKey:(NSString *)key;
-
-+ (YYModel)YYModel;
-
-+ (YYModelForKey)YYModelForKey;
-
-+ (YYModels)YYModels;
-
-+ (YYModelsForKey)YYModelsForKey;
-
-@end
-
-@interface NSObject (YYProperties)
-/**
-*   根据传入的class返回属性集合
-*/
-const char *property_getTypeString(objc_property_t property);
-
-- (NSArray *)yyPropertiesOfClass:(Class)aClass;
-
-+ (NSString *)propertyConformsToProtocol:(Protocol *)protocol propertyName:(NSString *)propertyName;
-@end
-
-
-@interface NSString (YYJSONHelper)
-
-@end
-
-@interface NSDictionary (YYJSONHelper)
-
-- (id)yyObjectForKey:(id)key;
-
-@end
-
-@interface NSData (YYJSONHelper)
-/**
-*   @brief  通过key拿到json数据
-*/
-- (id)valueForJsonKey:(NSString *)key;
-
-/**
-*   @brief  通过key集合拿到对应的key的json数据字典
-*/
-- (NSDictionary *)dictForJsonKeys:(NSArray *)keys;
-
-/**
-*   @brief  解析结果直接在parser的result字段里面，这个方法主要是为了提高解析的效率
-*   如果一个json中有多个key ex：{用户列表，商品列表、打折列表}那么传3个解析器进来就好了，不会对data进行三次重复的解析操作
-*   @param  parsers 要解析为json的解析器集合
-*/
-
-- (void)parseToObjectWithParsers:(NSArray *)parsers;
-@end
-
-@interface NSArray (YYJSONHelper)
+- (id)YYValueForKeyPath:(NSString *)keyPath;
 
 @end

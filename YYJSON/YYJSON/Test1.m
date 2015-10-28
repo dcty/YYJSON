@@ -13,10 +13,15 @@
 + (void)initialize
 {
     [super initialize];
-    [self bindYYJSONKey:@"data.country" toProperty:@"country"];
-    [self bindYYJSONKey:@"data.subdata" toProperty:@"subdata.Data"];
-    [self bindYYJSONKey:@"data.subdata.country" toProperty:@"miguo"];
+//    [self bindYYJSONKey:@"data.country" toProperty:@"country"];
+//    [self bindYYJSONKey:@"data.subdata" toProperty:@"subdata.Data"];
+//    [self bindYYJSONKey:@"data.subdata.country" toProperty:@"miguo"];
 }
+
++ (NSDictionary *)yyKeyMap{
+    return @{@"country":@"data.country",@"miguo":@"data.subdata.country",@"subdata":@"data.subdata"};
+}
+
 @end
 
 @implementation Data
