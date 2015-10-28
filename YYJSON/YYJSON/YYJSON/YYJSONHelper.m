@@ -162,7 +162,9 @@ static NSMapTable *YYJSONMapTable = nil;
                 }
             }
         } else {
-            [returnMe setValue:value forKeyPath:yyProperty.propertyName];
+            if (value){
+                [returnMe setValue:value forKeyPath:yyProperty.propertyName];
+            }
         }
     }];
     return returnMe;
