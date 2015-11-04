@@ -29,7 +29,7 @@
 @property (copy,nonatomic)NSString *ip;
 @end
 
-@interface Test1 : NSObject
+@interface Test1 : NSObject<YYJSONHelper>
 @property (assign,nonatomic)int code;
 @property (strong,nonatomic)Data *data;
 @property (copy,nonatomic)NSString *country;

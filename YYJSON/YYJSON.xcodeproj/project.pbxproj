@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22F63F2E4634F53D977A8C5B /* test3.json in Resources */ = {isa = PBXBuildFile; fileRef = 22F6391E8B198590B3ED8C38 /* test3.json */; };
 		2C225B60181A519D003F338D /* test.json in Resources */ = {isa = PBXBuildFile; fileRef = 2C225B5F181A519D003F338D /* test.json */; };
 		2C225B63181A51E5003F338D /* AudioModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C225B62181A51E5003F338D /* AudioModel.m */; };
 		2C225B66181A51FF003F338D /* AudioPartModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C225B65181A51FF003F338D /* AudioPartModel.m */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		22F6391E8B198590B3ED8C38 /* test3.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = test3.json; sourceTree = "<group>"; };
 		2C225B5F181A519D003F338D /* test.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = test.json; sourceTree = "<group>"; };
 		2C225B61181A51E5003F338D /* AudioModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioModel.h; sourceTree = "<group>"; };
 		2C225B62181A51E5003F338D /* AudioModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioModel.m; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				2C3AC9D8196903F600D6FC34 /* test1.json */,
 				2C3AC9DA1969041700D6FC34 /* Test1.h */,
 				2C3AC9DB1969041700D6FC34 /* Test1.m */,
+				22F6391E8B198590B3ED8C38 /* test3.json */,
 			);
 			path = YYJSON;
 			sourceTree = "<group>";
@@ -242,6 +245,7 @@
 				318218480569D95F157F9C4D /* Default-568h@2x.png in Resources */,
 				2C225B60181A519D003F338D /* test.json in Resources */,
 				2C3AC9D9196903F600D6FC34 /* test1.json in Resources */,
+				22F63F2E4634F53D977A8C5B /* test3.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

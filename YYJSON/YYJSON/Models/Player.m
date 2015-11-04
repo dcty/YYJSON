@@ -16,7 +16,7 @@
 //    [self bindYYJSONKey:@"website_url" toProperty:@"webSiteURLString"];
 }
 
-+ (NSDictionary *)yyKeyMap{
++ (NSDictionary *)YYJSON_keyMap {
     return @{@"webSiteURLString":@"website_url"};
 }
 

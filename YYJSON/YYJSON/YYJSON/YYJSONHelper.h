@@ -7,9 +7,16 @@
 
 @protocol YYJSONHelper
 @optional
-+ (NSDictionary *)yyKeyMap;
++ (NSDictionary *)YYJSON_keyMap;
 
-+ (BOOL)ignoreNullValues;   // default return YES
++ (NSArray *)YYJSON_ignoreProperties;
+
++ (BOOL)YYJSON_ignoreNullValues;   // default return YES
+
++ (BOOL)YYJSON_customSetValue:(id)value forKey:(NSString *)key atInstance:(id)instance;
+
++ (BOOL)YYJSON_Super;
+
 @end
 
 @interface NSObject (YYJSON)

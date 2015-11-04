@@ -53,39 +53,58 @@ static NSMapTable *YYJSONMapTable = nil;
 }
 
 
-+ (NSSet *)YYPropertySetOfClass:(Class)class {
++ (NSMutableSet *)YYPropertySetOfClass:(Class)class {
     NSString *className = NSStringFromClass(class);
     NSMutableSet *set = YYJSONKeyDict[className];
     if (set) {
         return set;
     }
     set = [[NSMutableSet alloc] init];
+    if ([class YYJSON_Super] && ![NSStringFromClass([class superclass]) isEqualToString:@"NSObject"]) {
+        [set addObjectsFromArray:[self _YYPropertySetOfClass:[class superclass]].allObjects];
+    }
+    [set addObjectsFromArray:[self _YYPropertySetOfClass:class].allObjects];
+    if (class) {
+        YYJSONKeyDict[className] = set;
+    }
+
+    return set;
+}
+
++ (NSSet *)_YYPropertySetOfClass:(Class)class {
+    NSString *className = NSStringFromClass(class);
+    NSMutableSet *set = [[NSMutableSet alloc] init];
     id obj = objc_getClass([className cStringUsingEncoding:4]);
     unsigned int outCount, i;
     NSDictionary *customKeyMap = nil;
-    if ([obj respondsToSelector:@selector(yyKeyMap)]) {
-        customKeyMap = [obj yyKeyMap];
+    NSArray *YYJSON_ignoreProperties = nil;
+    if ([obj respondsToSelector:@selector(YYJSON_keyMap)]) {
+        customKeyMap = [obj YYJSON_keyMap];
     }
+    if ([obj respondsToSelector:@selector(YYJSON_ignoreProperties)]) {
+        YYJSON_ignoreProperties = [obj YYJSON_ignoreProperties];
+    }
+
     objc_property_t *properties = class_copyPropertyList(obj, &outCount);
     for (i = 0; i < outCount; i++) {
         objc_property_t property = properties[i];
         NSString *propertyName = [NSString stringWithCString:property_getName(property) encoding:4];
-        YYProperty *yyProperty = [[YYProperty alloc] init];
-        NSString *customPropertyName = [customKeyMap valueForKey:propertyName];
-        yyProperty.propertyName = propertyName;
-        yyProperty.jsonKeyPath = customPropertyName ?: propertyName;
-        id propertyClass = [self classOfProperty:property];
-        if (propertyClass) {
-            yyProperty.bindClass = propertyClass;
+        if (![YYJSON_ignoreProperties containsObject:propertyName]){
+            YYProperty *yyProperty = [[YYProperty alloc] init];
+            NSString *customPropertyName = [customKeyMap valueForKey:propertyName];
+            yyProperty.propertyName = propertyName;
+            yyProperty.jsonKeyPath = customPropertyName ?: propertyName;
+            id propertyClass = [self classOfProperty:property];
+            if (propertyClass) {
+                yyProperty.bindClass = propertyClass;
+            }
+            [set addObject:yyProperty];
         }
-        [set addObject:yyProperty];
     }
     free(properties);
-    if (class) {
-        YYJSONKeyDict[className] = set;
-    }
     return set;
 }
+
 
 + (Class)classOfProperty:(objc_property_t)property {
     NSString *typeName = property_getTypeString(property);
@@ -107,6 +126,7 @@ static NSMapTable *YYJSONMapTable = nil;
     }
     return nil;
 }
+
 
 @end
 
@@ -140,34 +160,33 @@ static NSMapTable *YYJSONMapTable = nil;
 
 + (id)convertDictionary:(NSDictionary *)dictionary toModel:(Class)class {
     NSSet *set = [self YYPropertySetOfClass:class];
-    id returnMe = [class new];
+    id instance = [class new];
     [set enumerateObjectsUsingBlock:^(YYProperty *yyProperty, BOOL *stop) {
         id value = [dictionary valueForKeyPath:yyProperty.jsonKeyPath];
-        if (yyProperty.bindClass) {
-            value = [self convertObject:value toModel:yyProperty.bindClass];
-        }
-        BOOL ignoreNullValues = YES;
-        if ([class respondsToSelector:@selector(ignoreNullValues)]) {
-            ignoreNullValues = [class ignoreNullValues];
-        }
-        if (ignoreNullValues) {
-            if ([value isKindOfClass:[NSString class]]) {
-                NSString *string = (NSString *) value;
-                if (string.length > 0 && ![string.lowercaseString isEqualToString:@"null"]) {
-                    [returnMe setValue:value forKey:yyProperty.propertyName];
+        if (![class YYJSON_customSetValue:value forKey:yyProperty.propertyName atInstance:instance]) {
+            if (yyProperty.bindClass) {
+                value = [self convertObject:value toModel:yyProperty.bindClass];
+            }
+            BOOL ignoreNullValues = [class YYJSON_ignoreNullValues];
+            if (ignoreNullValues) {
+                if ([value isKindOfClass:[NSString class]]) {
+                    NSString *string = (NSString *) value;
+                    if (string.length > 0 && ![string.lowercaseString isEqualToString:@"null"]) {
+                        [instance setValue:value forKey:yyProperty.propertyName];
+                    }
+                } else {
+                    if (value && value != [NSNull null]) {
+                        [instance setValue:value forKey:yyProperty.propertyName];
+                    }
                 }
             } else {
-                if (value && value != [NSNull null]) {
-                    [returnMe setValue:value forKey:yyProperty.propertyName];
+                if (value) {
+                    [instance setValue:value forKeyPath:yyProperty.propertyName];
                 }
-            }
-        } else {
-            if (value){
-                [returnMe setValue:value forKeyPath:yyProperty.propertyName];
             }
         }
     }];
-    return returnMe;
+    return instance;
 }
 
 + (id)YYJSON:(id)object {
@@ -249,6 +268,18 @@ static NSMapTable *YYJSONMapTable = nil;
 
 
 @implementation NSObject (YYJSON)
+
++ (BOOL)YYJSON_ignoreNullValues {
+    return YES;
+}
+
++ (BOOL)YYJSON_customSetValue:(id)value forKey:(NSString *)key atInstance:(id)instance {
+    return NO;
+}
+
++ (BOOL)YYJSON_Super {
+    return YES;
+}
 
 - (instancetype)toModel:(id)clazz {
     return [self toModel:clazz forKeyPath:nil];

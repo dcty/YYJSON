@@ -28,7 +28,8 @@
 
     NSData *data1 = [[NSData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test1" ofType:@"json"]];
     Test1 *test1 = [Test1 objectWithInput:data1];
-    NSLog(@"test1.YYJSONString = %@",test1.YYJSONString);
+    Data *data = [Data objectWithInput:data1 forKeyPath:@"data"];
+    NSLog(@"test1.YYJSONString = %@",data.YYJSONString);
 //    YYJSONParser *dataParser = [YYJSONParser objectWithKey:@"data" clazz:[Data class]];
 //    [data1 parseToObjectWithParsers:@[dataParser]];
 //    Data *result = dataParser.result;

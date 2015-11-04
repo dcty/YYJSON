@@ -22,8 +22,29 @@
     return @{@"country":@"data.country",@"miguo":@"data.subdata.country",@"subdata":@"data.subdata"};
 }
 
++ (NSArray *)YYJSON_ignoreProperties {
+    return @[@"country"];
+}
+
+
++ (BOOL)YYJSON_customSetValue:(id)value forKey:(NSString *)key atInstance:(id)instance {
+    if ([key isEqualToString:@"country"]){
+        [instance setValue:@"哈哈" forKey:key];
+        return YES;
+    }
+    return NO;
+}
+
+
 @end
 
 @implementation Data
++ (void)initialize {
+}
+
++ (NSArray *)YYJSON_ignoreProperties {
+    return @[@"country"];
+}
+
 
 @end
