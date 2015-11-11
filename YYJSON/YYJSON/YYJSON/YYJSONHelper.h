@@ -13,9 +13,9 @@
 
 + (BOOL)YYJSON_ignoreNullValues;   // default return YES
 
-+ (BOOL)YYJSON_customSetValue:(id)value forKey:(NSString *)key atInstance:(id)instance;
-
 + (BOOL)YYJSON_Super;
+
+- (id)YYJSON_customValueFromOriginalValue:(id)originalValue propertyName:(NSString *)propertyName;
 
 @end
 

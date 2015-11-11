@@ -163,7 +163,7 @@ static NSMapTable *YYJSONMapTable = nil;
     id instance = [class new];
     [set enumerateObjectsUsingBlock:^(YYProperty *yyProperty, BOOL *stop) {
         id value = [dictionary valueForKeyPath:yyProperty.jsonKeyPath];
-        if (![class YYJSON_customSetValue:value forKey:yyProperty.propertyName atInstance:instance]) {
+        if (![instance YYJSON_customValueFromOriginalValue:value propertyName:yyProperty.propertyName]) {
             if (yyProperty.bindClass) {
                 value = [self convertObject:value toModel:yyProperty.bindClass];
             }
@@ -273,12 +273,12 @@ static NSMapTable *YYJSONMapTable = nil;
     return YES;
 }
 
-+ (BOOL)YYJSON_customSetValue:(id)value forKey:(NSString *)key atInstance:(id)instance {
-    return NO;
-}
-
 + (BOOL)YYJSON_Super {
     return YES;
+}
+
+- (id)YYJSON_customValueFromOriginalValue:(id)originalValue propertyName:(NSString *)propertyName{
+    return nil;
 }
 
 - (instancetype)toModel:(id)clazz {
