@@ -4,7 +4,6 @@
 //
 
 
-#import "YYJSONHelper.h"
 #import "objc/runtime.h"
 
 #ifdef DEBUG
@@ -53,58 +52,39 @@ static NSMapTable *YYJSONMapTable = nil;
 }
 
 
-+ (NSMutableSet *)YYPropertySetOfClass:(Class)class {
++ (NSSet *)YYPropertySetOfClass:(Class)class {
     NSString *className = NSStringFromClass(class);
     NSMutableSet *set = YYJSONKeyDict[className];
     if (set) {
         return set;
     }
     set = [[NSMutableSet alloc] init];
-    if ([class YYJSON_Super] && ![NSStringFromClass([class superclass]) isEqualToString:@"NSObject"]) {
-        [set addObjectsFromArray:[self _YYPropertySetOfClass:[class superclass]].allObjects];
-    }
-    [set addObjectsFromArray:[self _YYPropertySetOfClass:class].allObjects];
-    if (class) {
-        YYJSONKeyDict[className] = set;
-    }
-
-    return set;
-}
-
-+ (NSSet *)_YYPropertySetOfClass:(Class)class {
-    NSString *className = NSStringFromClass(class);
-    NSMutableSet *set = [[NSMutableSet alloc] init];
     id obj = objc_getClass([className cStringUsingEncoding:4]);
     unsigned int outCount, i;
     NSDictionary *customKeyMap = nil;
-    NSArray *YYJSON_ignoreProperties = nil;
-    if ([obj respondsToSelector:@selector(YYJSON_keyMap)]) {
-        customKeyMap = [obj YYJSON_keyMap];
+    if ([obj respondsToSelector:@selector(yyKeyMap)]) {
+        customKeyMap = [obj yyKeyMap];
     }
-    if ([obj respondsToSelector:@selector(YYJSON_ignoreProperties)]) {
-        YYJSON_ignoreProperties = [obj YYJSON_ignoreProperties];
-    }
-
     objc_property_t *properties = class_copyPropertyList(obj, &outCount);
     for (i = 0; i < outCount; i++) {
         objc_property_t property = properties[i];
         NSString *propertyName = [NSString stringWithCString:property_getName(property) encoding:4];
-        if (![YYJSON_ignoreProperties containsObject:propertyName]){
-            YYProperty *yyProperty = [[YYProperty alloc] init];
-            NSString *customPropertyName = [customKeyMap valueForKey:propertyName];
-            yyProperty.propertyName = propertyName;
-            yyProperty.jsonKeyPath = customPropertyName ?: propertyName;
-            id propertyClass = [self classOfProperty:property];
-            if (propertyClass) {
-                yyProperty.bindClass = propertyClass;
-            }
-            [set addObject:yyProperty];
+        YYProperty *yyProperty = [[YYProperty alloc] init];
+        NSString *customPropertyName = [customKeyMap valueForKey:propertyName];
+        yyProperty.propertyName = propertyName;
+        yyProperty.jsonKeyPath = customPropertyName ?: propertyName;
+        id propertyClass = [self classOfProperty:property];
+        if (propertyClass) {
+            yyProperty.bindClass = propertyClass;
         }
+        [set addObject:yyProperty];
     }
     free(properties);
+    if (class) {
+        YYJSONKeyDict[className] = set;
+    }
     return set;
 }
-
 
 + (Class)classOfProperty:(objc_property_t)property {
     NSString *typeName = property_getTypeString(property);
@@ -127,7 +107,6 @@ static NSMapTable *YYJSONMapTable = nil;
     return nil;
 }
 
-
 @end
 
 @interface YYJSONHelper : NSObject
@@ -146,6 +125,9 @@ static NSMapTable *YYJSONMapTable = nil;
     }
     NSMutableArray *array = nil;
     id JSON = [self YYJSON:object];
+    if (keyPath) {
+        JSON = [JSON valueForKeyPath:keyPath];
+    }
     if ([JSON isKindOfClass:[NSArray class]]) {
         array = [[NSMutableArray alloc] init];
         for (NSDictionary *dictionary in JSON) {
@@ -153,40 +135,48 @@ static NSMapTable *YYJSONMapTable = nil;
         }
     }
     else if ([JSON isKindOfClass:[NSDictionary class]]) {
-        return [self convertDictionary:keyPath ? [(NSDictionary *) JSON valueForKeyPath:keyPath] : JSON toModel:class];
+        return [self convertDictionary:JSON toModel:class];
     }
     return array.count > 0 ? array : nil;
 }
 
 + (id)convertDictionary:(NSDictionary *)dictionary toModel:(Class)class {
+    if (![dictionary isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    } else {
+        if (dictionary.allValues.count == 0) {
+            return nil;
+        }
+    }
     NSSet *set = [self YYPropertySetOfClass:class];
-    id instance = [class new];
+    id returnMe = [class new];
     [set enumerateObjectsUsingBlock:^(YYProperty *yyProperty, BOOL *stop) {
         id value = [dictionary valueForKeyPath:yyProperty.jsonKeyPath];
-        if (![instance YYJSON_customValueFromOriginalValue:value propertyName:yyProperty.propertyName]) {
-            if (yyProperty.bindClass) {
-                value = [self convertObject:value toModel:yyProperty.bindClass];
-            }
-            BOOL ignoreNullValues = [class YYJSON_ignoreNullValues];
-            if (ignoreNullValues) {
-                if ([value isKindOfClass:[NSString class]]) {
-                    NSString *string = (NSString *) value;
-                    if (string.length > 0 && ![string.lowercaseString isEqualToString:@"null"]) {
-                        [instance setValue:value forKey:yyProperty.propertyName];
-                    }
-                } else {
-                    if (value && value != [NSNull null]) {
-                        [instance setValue:value forKey:yyProperty.propertyName];
-                    }
+        if (yyProperty.bindClass) {
+            value = [self convertObject:value toModel:yyProperty.bindClass];
+        }
+        BOOL ignoreNullValues = YES;
+        if ([class respondsToSelector:@selector(ignoreNullValues)]) {
+            ignoreNullValues = [class ignoreNullValues];
+        }
+        if (ignoreNullValues) {
+            if ([value isKindOfClass:[NSString class]]) {
+                NSString *string = (NSString *) value;
+                if (string.length > 0 && ![string.lowercaseString isEqualToString:@"null"]) {
+                    [returnMe setValue:value forKey:yyProperty.propertyName];
                 }
             } else {
-                if (value) {
-                    [instance setValue:value forKeyPath:yyProperty.propertyName];
+                if (value && value != [NSNull null]) {
+                    [returnMe setValue:value forKey:yyProperty.propertyName];
                 }
+            }
+        } else {
+            if (value) {
+                [returnMe setValue:value forKeyPath:yyProperty.propertyName];
             }
         }
     }];
-    return instance;
+    return returnMe;
 }
 
 + (id)YYJSON:(id)object {
@@ -269,18 +259,6 @@ static NSMapTable *YYJSONMapTable = nil;
 
 @implementation NSObject (YYJSON)
 
-+ (BOOL)YYJSON_ignoreNullValues {
-    return YES;
-}
-
-+ (BOOL)YYJSON_Super {
-    return YES;
-}
-
-- (id)YYJSON_customValueFromOriginalValue:(id)originalValue propertyName:(NSString *)propertyName{
-    return nil;
-}
-
 - (instancetype)toModel:(id)clazz {
     return [self toModel:clazz forKeyPath:nil];
 }
@@ -327,6 +305,14 @@ static NSMapTable *YYJSONMapTable = nil;
 - (NSString *)YYJSONString {
     if ([self isKindOfClass:[NSArray class]]) {
         return [YYJSONHelper JSONStringFromArray:(id) self];
+    }
+    if ([self isKindOfClass:[NSDictionary class]]) {
+        NSData *JSONData = [NSJSONSerialization dataWithJSONObject:self options:YYJSONFormat error:nil];
+        if (JSONData.length > 0) {
+            return [[NSString alloc] initWithData:JSONData encoding:4];
+        } else {
+            return nil;
+        }
     }
     return [YYJSONHelper JSONStringFromModel:self];
 }
