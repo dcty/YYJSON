@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.license      = 'MIT'
   s.author       = { "Ivan" => "dcty@qq.com" }
   s.source       = { :git => 'https://github.com/dcty/YYJSON.git'}
-  s.platform     = :ios,'5.0'
+  s.platform     = { :"osx": "10.6",:ios,'5.0'}
   s.source_files = 'YYJSON/YYJSON/YYJSON/YYJSONHelper.{h,m}'
   s.requires_arc = true
 end
