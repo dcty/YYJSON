@@ -60,8 +60,6 @@ static void YY_swizzleInstanceMethod(Class c, SEL original, SEL replacement);
 
 @implementation NSObject (YYJSONHelper)
 
-static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
-
 #if DEBUG
 
 - (NSString *)YY
@@ -85,38 +83,45 @@ static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
 
 + (NSMutableDictionary *)_YYJSONKeyDict
 {
-    if (!YY_JSON_OBJECT_KEYDICTS)
-    {
+    static NSMutableDictionary *YY_JSON_OBJECT_KEYDICTS = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         YY_JSON_OBJECT_KEYDICTS = [[NSMutableDictionary alloc] init];
-    }
+    });
+    
     NSString *YYObjectKey = [NSString stringWithFormat:@"YY_JSON_%@", NSStringFromClass([self class])];
     NSMutableDictionary *dictionary = [YY_JSON_OBJECT_KEYDICTS yyObjectForKey:YYObjectKey];
     if (!dictionary)
     {
-        dictionary = [[NSMutableDictionary alloc] init];
-        Class superClass = [self superclass];
-        if ([self YYSuper] && superClass && ![NSStringFromClass(superClass) isEqualToString:@"NSObject"])
+        @synchronized(YY_JSON_OBJECT_KEYDICTS)
         {
-            [dictionary setValuesForKeysWithDictionary:[[self superclass] YYJSONKeyDict]];
+            dictionary = [YY_JSON_OBJECT_KEYDICTS yyObjectForKey:YYObjectKey];
+            if (dictionary) {
+                return dictionary;
+            }
+            dictionary = [[NSMutableDictionary alloc] init];
+            Class superClass = [self superclass];
+            if ([self YYSuper] && superClass && ![NSStringFromClass(superClass) isEqualToString:@"NSObject"]) {
+                [dictionary setValuesForKeysWithDictionary:[[self superclass] YYJSONKeyDict]];
+            }
+            
+            //因为我们的Model可能已经继承了自己写的BaseModel，如果再让你继承我自己写的一个BaseJsonModel，那么可能会破坏你的设计。
+            //由于我不喜欢继承，所以无法重写  valueForUndefinedKey: 和 setValue:forUndefinedKey:
+            //这边使用了一个取巧的方法。 如果你没有重载这两个方法，我会帮你重载  并什么都不做.  如果你重载了,我就不进行替换了
+            YY_swizzleInstanceMethod(self, @selector(valueForUndefinedKey:), @selector(YY_valueForUndefinedKey:));
+            YY_swizzleInstanceMethod(self, @selector(setValue:forUndefinedKey:), @selector(YY_setValue:forUndefinedKey:));
+            NSArray *properties = [self yyPropertiesOfClass:[self class]];
+            [properties enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                NSString *typeName = [self propertyConformsToProtocol:@protocol(YYJSONHelperProtocol) propertyName:obj];
+                if (typeName) {
+                    dictionary[obj] = typeName;
+                }
+                else {
+                    dictionary[obj] = obj;
+                }
+            }];
+            YY_JSON_OBJECT_KEYDICTS[YYObjectKey] = dictionary;
         }
-        //因为我们的Model可能已经继承了自己写的BaseModel，如果再让你继承我自己写的一个BaseJsonModel，那么可能会破坏你的设计。
-        //由于我不喜欢继承，所以无法重写  valueForUndefinedKey: 和 setValue:forUndefinedKey:
-        //这边使用了一个取巧的方法。 如果你没有重载这两个方法，我会帮你重载  并什么都不做.  如果你重载了,我就不进行替换了
-        YY_swizzleInstanceMethod(self, @selector(valueForUndefinedKey:), @selector(YY_valueForUndefinedKey:));
-        YY_swizzleInstanceMethod(self, @selector(setValue:forUndefinedKey:), @selector(YY_setValue:forUndefinedKey:));
-        NSArray *properties = [self yyPropertiesOfClass:[self class]];
-        [properties enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            NSString *typeName = [self propertyConformsToProtocol:@protocol(YYJSONHelperProtocol) propertyName:obj];
-            if (typeName)
-            {
-                dictionary[obj] = typeName;
-            }
-            else
-            {
-                dictionary[obj] = obj;
-            }
-        }];
-        YY_JSON_OBJECT_KEYDICTS[YYObjectKey] = dictionary;
     }
     return dictionary;
 }
